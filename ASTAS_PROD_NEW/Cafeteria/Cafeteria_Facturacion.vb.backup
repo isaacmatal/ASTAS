@@ -1,0 +1,1471 @@
+Public Class Cafeteria_Facturacion
+    Dim c_data2 As New jarsClass
+    Dim c_data As New cmbFill
+    Dim Iniciando As Boolean
+    Dim codigo_as As String, codigo_buxi As String
+    Dim DS01, DS02, DS03 As New DataSet()
+    Dim Bodega As Integer, Tiempo As Integer, Estado As String, Caja As String, descripcion_Caja As String
+    Dim Resolucion As String, fecha_resolucion As String, fecha_autorizacion As String, del As String, al As String, descripcion_bodega As String
+    Dim Movimiento As String, PRODUCTO As String, item As String, serie As String, fecha_aprovacion As String, tiempo_c As String, correlativo_Actual As String
+    Dim SQL As String, COSTO_PROM As String, IVA As String, DESCUENTO As String, ORIGEN As String, TIPOX As String, cobrarx As Boolean = False
+    Dim bandera As Boolean = False, bandera1 As Boolean = False, direccion As String, A As String, saldo As Double, DESCUX As String
+    Dim TICKET As New GenerarTicket
+    Dim PARTIDAS As New Facturacion_Procesos
+    Dim listaTicket As New List(Of String)    
+
+    Private Sub Cafeteria_Facturacion_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Iniciando = True
+        'VERIFICAR APERTURA        
+
+        Estado = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "', @BANDERA=0", 0)
+
+        Bodega = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 2)
+        Caja = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 4)
+        Tiempo = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 3)
+        tiempo_c = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 6)        
+        descripcion_bodega = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 7)
+
+        If Caja = Nothing Then
+        Else
+            direccion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=1", 0)
+        End If
+
+        descripcion_Caja = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @FECHA='" & Format(dtpFechaTrabajo.Value, "yyyy-MM-dd") & "',@USUARIO_LOGEO='" & Usuario & "',@BANDERA=0", 6)
+
+
+        txtCodigoCajero.Text = Usuario
+        txtTiempoComida.Text = descripcion_Caja
+        txtCaja.Text = Caja
+
+        If Estado = Nothing Or Bodega = 0 Or Tiempo = 0 Or Caja = Nothing Then
+            txtCantidad.Enabled = False
+            Button7.Enabled = False
+            btnCobrar.Enabled = False
+            MsgBox("Aviso...No hay tiempo de comida aperturado!", MsgBoxStyle.Information)
+        Else
+            CargarMenuDia
+
+        End If
+
+        txtCodigoEmpleado.Focus()
+        Me.ActiveControl = txtCodigoEmpleado
+
+        Iniciando = False
+    End Sub
+    Public Function NumeroFactura()
+        Dim permiso As Integer = 0
+        serie = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & Me.txtCaja.Text & ",@BANDERA=1", 0)
+        correlativo_Actual = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & Me.txtCaja.Text & ",@BANDERA=1", 3)
+        txt_correlativo.Text = correlativo_Actual
+        Resolucion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 0)
+        fecha_resolucion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 1)
+        fecha_autorizacion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 2)
+        del = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 3)
+        al = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 4)
+        permiso = 1
+        If ((serie = Nothing) Or (serie = "")) Or ((correlativo_Actual = Nothing) Or (correlativo_Actual = "")) Or ((Resolucion = Nothing) Or (Resolucion = "")) Or ((fecha_resolucion = Nothing) Or (fecha_resolucion = "")) Or ((fecha_autorizacion = Nothing) Or (fecha_autorizacion = "")) Or ((Val(del) = Nothing) Or (del = "")) Or ((al = Nothing) Or (al = "")) Then
+            permiso = 0
+        End If
+        Return permiso
+    End Function
+    Public Sub CargarFacturaAnterior()
+        CargarGrid(SQL, DS01)
+        dgvDetalleVenta.DataSource = DS01.Tables(0)
+        c_data2.cerrarConexion()
+    End Sub
+    Public Sub CargarMenuDetalle()
+        CargarDetalle(1)
+        CargarGrid(SQL, DS02)
+        dgvDetalleVenta.DataSource = DS02.Tables(0)
+        c_data2.cerrarConexion()
+
+        For i As Integer = 0 To 4
+            dgvDetalleVenta.Columns.Item(i).Visible = False
+        Next
+        dgvDetalleVenta.Columns.Item(8).Visible = False
+        dgvDetalleVenta.Columns.Item(5).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        dgvDetalleVenta.Columns.Item(7).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        dgvDetalleVenta.Columns.Item(8).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        dgvDetalleVenta.Columns.Item(9).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        dgvDetalleVenta.Columns.Item(10).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+
+        For i As Integer = 0 To dgvDetalleVenta.ColumnCount - 1
+            dgvDetalleVenta.Columns.Item(i).AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells
+        Next
+
+
+    End Sub
+    Public Sub CargarMenuDia()
+        cadenaSIUD(Compañia)
+        CargarGrid(SQL, DS01)
+        Me.dgvMenuDia.DataSource = DS01.Tables(0)
+        c_data2.cerrarConexion()
+
+        Me.dgvMenuDia.Columns.Item(0).Visible = False
+        Me.dgvMenuDia.Columns.Item(1).Visible = False
+        Me.dgvMenuDia.Columns.Item(5).Visible = False
+
+        For i As Integer = 0 To Me.dgvMenuDia.ColumnCount - 1
+            Me.dgvMenuDia.Columns.Item(i).AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells
+            Me.dgvMenuDia.Columns.Item(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        Next
+
+        Me.dgvMenuDia.Columns.Item(3).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+    End Sub
+    Public Sub CargarGrid(ByVal cadena, ByVal ds)
+        Try
+            ds.Reset()
+            c_data2.MiddleConnection(cadena)
+            c_data2.DataAdapter.Fill(ds)
+        Catch ex As Exception
+            MsgBox("Aviso...Ocurrio un problema a la hora de cargar la grilla", MsgBoxStyle.Information)
+        End Try
+    End Sub
+    Public Sub cadenaSIUD(ByVal CIA)        
+        Sql = "Execute [dbo].[sp_CAFETERIA_FACTURACION_CARGAR_BODEGAS_SIEMPRE] "
+        Sql &= "@COMPAÑIA = " & CIA
+        SQL &= ",@BODEGA1 = " & Bodega
+        SQL &= ",@BODEGA_PLATILOS = " & 19 'BODEGA PLATILLOS
+        Sql &= ",@TIEMPO = " & Tiempo
+        SQL &= ",@FECHA = '" & Format(Me.dtpFechaTrabajo.Value, "dd-MM-yyyy") & "'"
+        Sql &= ",@IVA = " & 13        
+    End Sub
+    Public Sub Limpiar()
+        TextBox2.Text = ""
+        txtProducto.Text = ""
+        txtDescripcion.Text = ""
+        txtCantidad.Text = ""
+        txtPrecio.Text = ""
+        txtTotal.Text = ""
+        txtExistencias.Text = ""
+    End Sub
+
+    Private Sub btnBuscarProducto_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnBuscarProducto.Click
+        Limpiar()
+        Dim Frm_Busqueda As New Inventario_Movimiento_busqueda_productos_por_bodega
+        Frm_Busqueda.Iniciando = True
+        Frm_Busqueda.TxtCompañia.Text = Descripcion_Compañia
+        Frm_Busqueda.TxtCompañia_cod.Text = Compañia
+        Frm_Busqueda.TxtBodega.Text = "Cafeteria Productos Facturacion"
+        Frm_Busqueda.TxtBodega_cod.Text = Bodega
+        Frm_Busqueda.Iniciando = False
+        Frm_Busqueda.ShowDialog()
+        Me.txtProducto.Text = CodigoProducto
+        Me.txtDescripcion.Text = Descripcion_Producto
+
+        'VERIFICA EL TIPO DE PRODUCTO QUE ES, PARA LUEGO DETERMINA LOS COSTOS
+        For i As Integer = 0 To dgvMenuDia.RowCount - 1
+
+            If dgvMenuDia.Rows(i).Cells(2).Value.ToString() = txtProducto.Text Then
+                'CALCULA LAS EXISTENCIAS
+                Me.txtPrecio.Text = dgvMenuDia.Rows(i).Cells(4).Value.ToString()
+                TIPOX = dgvMenuDia.Rows(i).Cells(5).Value.ToString()
+
+            End If
+
+        Next
+
+        If txtDescripcion.Text = "" Then
+            MsgBox("Aviso...Codigo No existe en esta bodega o no esta programado para este turno!", MsgBoxStyle.Information)
+        Else
+            If (txtCodigoEmpleado.Text = "") Then
+                MsgBox("Aviso...Debe seleccionar el empleado", MsgBoxStyle.Information)
+                txtCodigoEmpleado.Focus()
+            Else
+                If (txtProducto.Text = "") Then
+                Else
+                    txtExistencias.Text = c_data2.leerDataeader("SELECT DBO.calcular_existencia_actual(" & Compañia & "," & Bodega & "," & txtProducto.Text & ",'" & Format(Me.dtpFechaTrabajo.Value, "dd-MM-yyyy hh:mm:ss") & "')", 0)
+
+                    Me.TextBox2.Text = c_data2.leerDataeader("EXECUTE INVENTARIO_BUSCAR_PRODUCTO_POR_CODIGO @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @PRODUCTO=" & Me.txtProducto.Text & ", @BANDERA=1", 3)
+
+                    'VERIFICA EL TIPO DE PRODUCTO QUE ES, PARA LUEGO DETERMINA LOS COSTOS
+                    For i As Integer = 0 To dgvMenuDia.RowCount - 1
+
+                        If dgvMenuDia.Rows(i).Cells(2).Value.ToString() = TextBox2.Text Then
+                            'CALCULA LAS EXISTENCIAS
+                            Me.txtPrecio.Text = dgvMenuDia.Rows(i).Cells(4).Value.ToString()
+                            TIPOX = dgvMenuDia.Rows(i).Cells(5).Value.ToString()
+
+                        End If
+
+                    Next
+
+                    Me.txtCantidad.Text = "1"
+                    Me.txtCantidad.Focus()
+                End If
+
+
+            End If
+
+        End If
+    End Sub
+
+    Private Sub txtProducto_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtProducto.KeyPress       
+        
+    End Sub
+
+    Private Sub txtCantidad_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCantidad.KeyPress        
+        'If Char.IsDigit(e.KeyChar) Then
+        '    e.Handled = False
+        'ElseIf Char.IsControl(e.KeyChar) Then
+        '    e.Handled = False
+        'Else
+        '    e.Handled = True
+        'End If
+        If (e.KeyChar = "") Then
+            TextBox2.Focus()
+        End If
+        If (((e.KeyChar >= Microsoft.VisualBasic.ChrW(48)) And (e.KeyChar <= Microsoft.VisualBasic.ChrW(57))) Or (e.KeyChar = Microsoft.VisualBasic.ChrW(13))) Then
+            e.Handled = False
+            'RETROCESO
+        Else
+           
+            e.Handled = True
+            txtCantidad.Text = ""
+
+        End If
+
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(13) Then
+
+            If txtCantidad.Text = "" Or txtCantidad.Text = "0" Then
+                MsgBox("Aviso...DEBE INGRESAR UNA CANTIDAD", MsgBoxStyle.Information)
+            Else
+                For i As Integer = 0 To dgvMenuDia.RowCount - 1
+                    'SI EL PRODUCTO ESTA DENTRO DEL MENU DEL TIEMPO DE COMIDA INGRESA
+                    If (TextBox2.Text = dgvMenuDia.Rows(i).Cells(2).Value.ToString()) Then
+                        bandera = True
+
+                        'DETERMINA EL PRECIO Y EL TOTAL
+
+                        Me.txtTotal.Text = (Val(txtCantidad.Text) * Val(Me.txtPrecio.Text)).ToString()
+
+                        If (Val(Me.txtPrecio.Text) <= 0) Then
+                            If Val(TextBox2.Text) <> 2050013 Then
+                                MsgBox("AVISO...EL PRODUCTO NO TIENE PRECIO ASIGNADO!!!", MsgBoxStyle.Information)
+                                Exit Sub
+                            End If
+                        End If
+
+                        Exit For
+                    Else
+                        bandera = False
+                    End If
+                Next
+                If (bandera = True) Then
+                    If (Val(txtCantidad.Text) <= Val(txtExistencias.Text)) Then
+
+                        If (txtCantidad.Text >= 5) Then
+                            If MsgBox("AVISO...SE ESTAN FACTURANDO " & txtCantidad.Text & " " & txtDescripcion.Text, MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Mensaje") = MsgBoxResult.No Then
+                                Exit Sub
+                            End If
+                        End If
+
+                        If ((Me.dgvDetalleVenta.RowCount = 0)) Then
+                            'CALCULA EL NUMERO DE MOVIMIENTO SIGUIENTE                   
+                            NumeroMovimiento()
+                        End If
+
+
+                        'CALCULA EL COSTO PROMEDIO MISCELANEO 'M'  
+                        If TIPOX = "M" Then
+                            COSTO_PROM = c_data2.leerDataeader("Exec sp_INVENTARIOS_CALCULAR_COSTOS @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@PRODUCTO=" & txtProducto.Text & ",@FECHA='" & Format(Me.dtpFechaTrabajo.Value, "dd-MM-yyyy hh:mm:ss") & "'", 0)
+                        End If
+
+                        'CALCULA EL COSTO PROMEDIO PARA EL PLATILLO 'P'  
+                        If TIPOX = "P" Then
+                            COSTO_PROM = c_data2.leerDataeader("Exec sp_CAFETERIA_CALCULAR_COSTO_PLATO @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@PRODUCTO=" & txtProducto.Text & ",@TIEMPO=" & Tiempo & ",@FECHA='" & Format(Me.dtpFechaTrabajo.Value, "dd-MM-yyyy hh:mm:ss") & "'", 0)
+                        End If
+
+
+                        'SE RELLENA LA CADENA DE INGRESO DE LOS MOVIMIENTOS
+                        cadenaSIUDMovimientos("I", 0)
+
+                        'SE EJECUTA EL MOVIMIENTO
+                        c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                        'SE RELLENA LA CADENA DE INGRESO DE TABLA TEMPORAL
+                        CargarDetalle(4)
+
+                        'SE EJECUTA EL INGRESO
+                        c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                        'SE CARGA EL DETALLE DE LA FACTURA
+                        CargarMenuDetalle()
+
+                        'SE ACTUALIZA EL MONTO TOTAL VISTO POR EL USUARIO
+                        txtTotalPagar.Text = IIf(txtTotalPagar.Text = "", 0, txtTotalPagar.Text) + (Me.txtPrecio.Text * Me.txtCantidad.Text)
+                        TextBox3.Text = Math.Round((Val(txtTotalPagar.Text) - Val(txtDescuentos.Text)), 2).ToString()
+                        txtTotalPagar.Text = Math.Round(Val(txtTotalPagar.Text), 2)
+
+                        Limpiar()
+                        'FOCALIZA AL TEXT DE CODIGO
+                        TextBox2.Focus()
+                        NumeroFactura()
+
+                    Else
+                        MsgBox("AVISO...NO HAY SUFICIENTES EXISTENCIAS!!!", MsgBoxStyle.Information)
+                    End If
+                Else
+                    MsgBox("AVISO...EL PRODUCTO NO ESTA DISPONIBLE PARA ESTE TIEMPO DE COMIDA!!!", MsgBoxStyle.Information)
+                End If
+            End If
+
+        End If
+    End Sub
+    Public Sub EliminarDetalle(ByVal SIUD, ByVal producto, ByVal item)
+        SQL = "Execute [sp_CAFETERIA_FACTURACION_TEMPORAL_SIUD] "
+        SQL &= "@ITEM = " & item
+        SQL &= ",@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@CAJA = " & txtCaja.Text
+        SQL &= ",@FECHA = N'" & Format(Me.dtpFechaTrabajo.Value, "dd/MM/yyyy 00:00:00") & "'"
+        SQL &= ",@PRODUCTO = " & producto
+        SQL &= ",@CANTIDAD = 0"
+        SQL &= ",@COSTO_UNITARIO = 0"
+        SQL &= ",@PRECIO_UNITARIO = 0"
+        SQL &= ",@BANDERA = " & SIUD
+    End Sub
+    Public Sub CargarDetalle(ByVal SIUD)
+        SQL = "Execute [sp_CAFETERIA_FACTURACION_TEMPORAL_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@CAJA = " & txtCaja.Text
+        SQL &= ",@FECHA = N'" & Me.dtpFechaTrabajo.Text & "'"
+        SQL &= ",@PRODUCTO = " & IIf(txtProducto.Text = "", 0, txtProducto.Text)
+        SQL &= ",@CANTIDAD = " & IIf(Me.txtCantidad.Text = "", 0, txtCantidad.Text)
+        SQL &= ",@COSTO_UNITARIO = " & IIf(COSTO_PROM = "", 0, COSTO_PROM)
+        SQL &= ",@PRECIO_UNITARIO = " & IIf(txtPrecio.Text = "", 0, txtPrecio.Text)
+        SQL &= ",@BANDERA = " & SIUD
+    End Sub
+
+    Public Sub NumeroMovimiento()
+        Movimiento = c_data2.leerDataeader("SELECT ISNULL(MAX(MOVIMIENTO),0)+1 FROM INVENTARIOS_MOVIMIENTOS_ENCABEZADO WHERE COMPAÑIA=" & Compañia & " AND BODEGA=" & Bodega & " AND TIPO_MOVIMIENTO=2", 0)
+    End Sub
+    Public Sub EliminarDetalleTemporal(ByVal SIUD, ByVal producto)
+        If (bandera1 = True) Then
+            Movimiento = dgvDetalleVenta.Rows(0).Cells(22).Value.ToString()
+        End If
+        SQL = "Execute [dbo].[sp_INVENTARIOS_MOVIMIENTO_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@TIPO_MOVIMIENTO = 2"
+        SQL &= ",@MOV = " & Movimiento
+        SQL &= ",@PRODUCTO = " & Val(producto)
+        SQL &= ",@USUARIO = N'" & Usuario & "'"
+        SQL &= ",@SIUD = N'" & SIUD & "'"
+    End Sub
+    Public Sub cadenaSIUDMovimientos(ByVal SIUD, ByVal in_out)
+        SQL = "Execute [dbo].[sp_INVENTARIOS_MOVIMIENTO_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@PROVEEDOR = 0"
+        SQL &= ",@TIPO_MOVIMIENTO = 2"
+        SQL &= ",@MOV = " & Movimiento
+        SQL &= ",@TIPO_DOCUMENTO_CONTABLE = 1"
+        SQL &= ",@NUMERO_DOCUMENTO_CONTABLE = 0"
+        SQL &= ",@FECHA_MOVIMIENTO = N'" & Format(Me.dtpFechaTrabajo.Value, "dd/MM/yyyy hh:mm:ss") & "'"
+        SQL &= ",@ANULADO = " & 0
+        SQL &= ",@PROCESADO = " & 1
+        SQL &= ",@PRODUCTO = " & Val(Me.txtProducto.Text)
+        SQL &= ",@CANTIDAD = " & Val(Me.txtCantidad.Text)
+        SQL &= ",@COSTO_UNIDAD = " & COSTO_PROM
+        SQL &= ",@COSTO_TOTAL = " & IIf(COSTO_PROM = "", 0, Val((COSTO_PROM * Val(txtCantidad.Text))))
+        SQL &= ",@ENTRADA_SALIDA = " & in_out
+        SQL &= ",@USUARIO = N'" & Usuario & "'"
+        SQL &= ",@SIUD = N'" & SIUD & "'"
+    End Sub
+    
+    Private Sub txtPrecio_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtPrecio.KeyPress
+        If (((e.KeyChar >= Microsoft.VisualBasic.ChrW(48)) And (e.KeyChar <= Microsoft.VisualBasic.ChrW(57))) Or (e.KeyChar = Microsoft.VisualBasic.ChrW(13))) Then
+            e.Handled = False
+        Else
+            If ((e.KeyChar = Microsoft.VisualBasic.ChrW(46))) Then
+                If txtPrecio.Text.Equals(String.Empty) Then
+                    e.Handled = True
+                    txtPrecio.Text = ""
+                Else
+                    e.Handled = txtPrecio.Text.Contains(".")
+                End If
+            Else
+                e.Handled = True
+                txtPrecio.Text = ""
+            End If
+        End If
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(13) Then
+            txtTotal.Focus()
+        End If
+    End Sub
+    Private Sub txtCodigoEmpleado_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtCodigoEmpleado.KeyPress
+        If (((e.KeyChar >= Microsoft.VisualBasic.ChrW(48)) And (e.KeyChar <= Microsoft.VisualBasic.ChrW(57)))) Then
+            e.Handled = False
+        Else
+            If (e.KeyChar = Microsoft.VisualBasic.ChrW(13)) Then
+                leerBarra()
+            Else
+                txtCodigoEmpleado.Text = ""
+                txtNombreEmpleado.Text = ""
+                e.Handled = True
+            End If
+        End If
+    End Sub
+    Private Sub btnEliminarProducto_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEliminarProducto.Click
+        'ELIMINAR UNO A UNO DEL DETALLE
+        If (bandera1 = False) Then
+            If (item <> "" And PRODUCTO <> "") Then
+                'SE RELLENA LA CADENA DE ELIMINACION DE MOVIMIENTO
+                EliminarDetalleTemporal("DD", PRODUCTO)
+
+                'SE EJECUTA LA ELIMINACION
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                'SE RELLENA LA CADENA DE ELIMINACION DE TABLA TEMPORAL
+                EliminarDetalle(2, PRODUCTO, item)
+
+                'SE EJECUTA LA ELIMINACION
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                'SE CARGA EL DETALLE DE LA FACTURA
+                CargarMenuDetalle()
+
+                'RECALCULA EL TOTAL
+                txtTotalPagar.Text = "0.0"
+                For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+                    txtTotalPagar.Text = (Val(dgvDetalleVenta.Rows(i).Cells(10).Value.ToString()) + Val(txtTotalPagar.Text)).ToString()
+                Next
+
+                TextBox3.Text = (Val(txtTotalPagar.Text) - Val(txtDescuentos.Text)).ToString()
+            End If
+
+            item = ""
+            PRODUCTO = ""
+        Else
+            'ELIMINA TODA EL TICKET
+            'pendiente
+            Dim respuesta As MsgBoxResult
+            respuesta = MsgBox("Desea eliminar el Ticket?", MsgBoxStyle.DefaultButton2 Or MsgBoxStyle.Critical Or MsgBoxStyle.YesNo, "Mensaje de confirmacion")
+            If respuesta = MsgBoxResult.Yes Then
+
+                If Val(dgvDetalleVenta.Rows(0).Cells(11).Value.ToString()) = 1 Then
+                    MsgBox("Aviso...El Ticket ya fue anulado!", MsgBoxStyle.Information)
+                    Exit Sub
+                End If
+
+                For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+
+                    'SE RELLENA LA CADENA DE INGRESO DE LOS MOVIMIENTOS
+                    cadenaSIUDMovimientos("D1", 0)
+
+                    'SE EJECUTA EL MOVIMIENTO
+                    c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                    GuardarFacturaNegativa(dgvDetalleVenta.Rows(i).Cells(2).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(3).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(12).Value, dgvDetalleVenta.Rows(i).Cells(13).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(14).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(15).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(16).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(17).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(18).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(19).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(20).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(5).Value.ToString())
+
+                Next
+                
+                If (cobrarx = False) Then
+                    Dim tipo_impresor As String
+                    tipo_impresor = c_data2.leerDataeader("execute sp_TIPO_IMPRESOR @COMPAÑIA=" & Compañia & ", @BODEGA= " & Bodega & ",@CAJA=" & Caja, 0)
+                    If tipo_impresor = "False" Then
+                        GuardarTicketAnulado()
+                    Else
+                        GuardarTicketFiscalAnulado()
+                    End If
+                Else
+                    MsgBox("Aviso!", MsgBoxStyle.Information)
+                End If
+
+                'SE CARGA EL DETALLE DE LA FACTURA
+                CargarMenuDetalle()
+
+                Me.btnNuevo.PerformClick()
+                MsgBox("Aviso...Se ha anulado el Ticket con exito!", MsgBoxStyle.Information)                
+            End If
+        End If
+    End Sub
+
+    Public Sub GuardarFacturaNegativa(ByVal SERIE1, ByVal NUMERO_FACTURA1, ByVal FECHA1, ByVal TIEMPO1, ByVal CAJA1, ByVal CODIGO_EMPLEADO1, ByVal FORMA_PAGO1, ByVal IVA1, ByVal DESCUENTO1, ByVal MONTO1, ByVal ORIGEN1, ByVal PRODUCTO1)
+        correlativo_Actual = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & CAJA1 & ",@BANDERA=1", 3)
+
+        SQL = "Execute [dbo].[sp_CAFETERIA_FACTURACION_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@SERIE = '" & SERIE1 & "'"
+        SQL &= ",@NUMERO_FACTURA = " & NUMERO_FACTURA1
+        SQL &= ",@TIEMPO = " & TIEMPO1
+        SQL &= ",@CAJA = " & CAJA1
+        SQL &= ",@CODIGO_EMPLEADO = " & CODIGO_EMPLEADO1
+        SQL &= ",@ANULADO = 1"
+        SQL &= ",@FORMA_PAGO = " & FORMA_PAGO1
+        SQL &= ",@IVA = " & IVA1 'JNJN
+        SQL &= ",@DEUDA = " & DESCUENTO1 'SE LE INGRESA EL DESCUENTO PERO NO LE CAMBIEN EL NOMBRE DEL PARAMETRO
+        SQL &= ",@MONTO = " & MONTO1
+        SQL &= ",@TIPO_DOCUMENTO = 27" 'TICKET DE CAJA DEFINIDO EN CONTABILIDAD_CATALOGO_TIPO_DOCUMENTO
+        SQL &= ",@ORIGEN = " & ORIGEN1
+        SQL &= ",@PROCESADO = 1"
+        SQL &= ",@USUARIO_CREACION = '" & Usuario & "'"
+        SQL &= ",@BANDERA = 'U'"
+        SQL &= ",@PRODUCTO = " & PRODUCTO1
+        SQL &= ",@CANTIDAD = 0"
+        SQL &= ",@COSTO_UNITARIO = 0"
+        SQL &= ",@PRECIO_UNITARIO = 0"
+        SQL &= ",@PRECIO_TOTAL = 0"
+        SQL &= ",@TIPO_MOV = 2"
+        SQL &= ",@MOV = " & dgvDetalleVenta.Rows(0).Cells(22).Value.ToString()
+        c_data2.Ejecutar_ConsultaSQL(SQL)
+    End Sub
+    Public Sub obtenerDatosFacturacionCaja()
+        SQL = "Execute [dbo].[sp_CAFETERIA_FACTURACION_OBTENER_SERIE] "
+        SQL &= ",@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@CAJA = " & txtCaja.Text
+        SQL &= ",@BANDERA = 1"
+    End Sub
+    Public Sub GuardarFactura(ByVal PRODUCTO, ByVal CANTIDAD, ByVal COSTO_UNI, ByVal PRECIO_UNITARIO)
+        Dim forma_pago As String
+        If (Me.rbCredito.Checked = True) Then
+            forma_pago = "2" 'CREDITO
+        Else
+            forma_pago = "1" 'CONTADO
+        End If
+
+        IVA = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & Me.txtCaja.Text & ",@BANDERA=2", 0)
+        'DESCUENTO = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@COD_EMPLEADO_AS='" & codigo_as & "',@COD_EMPLEADO=" & txtCodigoEmpleado.Text & ", @BANDERA=7", 0)
+
+        SQL = "Execute [dbo].[sp_CAFETERIA_FACTURACION_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@SERIE = '" & serie & "'"
+        SQL &= ",@NUMERO_FACTURA = " & correlativo_Actual
+        SQL &= ",@FECHA = N'" & Me.dtpFechaTrabajo.Text & "'"
+        SQL &= ",@TIEMPO = " & Tiempo
+        SQL &= ",@CAJA = " & Me.txtCaja.Text
+        SQL &= ",@CODIGO_EMPLEADO = " & codigo_buxi
+        SQL &= ",@CODIGO_EMPLEADO_AS = '" & codigo_as.PadLeft(6, "0") & "'"
+        SQL &= ",@ANULADO = 0"
+        SQL &= ",@FORMA_PAGO = " & forma_pago
+        Dim ivax As String = ((Val(DESCUENTO) + Val(txtTotalPagar.Text)) * (Val(IVA) / 100)).ToString()
+        SQL &= ",@IVA = " & ivax 'JNJN
+        If (rbEfectivo.Checked = True) Then
+            SQL &= ",@DEUDA = " & Me.DESCUENTO 'SE LE INGRESA EL DESCUENTO PERO NO LE CAMBIEN EL NOMBRE DEL PARAMETRO
+            SQL &= ",@MONTO = " & txtTotalPagar.Text
+        Else
+            SQL &= ",@DEUDA = " & Me.DESCUENTO 'SE LE INGRESA EL DESCUENTO PERO NO LE CAMBIEN EL NOMBRE DEL PARAMETRO
+            SQL &= ",@MONTO = " & txtTotalPagar.Text
+        End If
+
+        SQL &= ",@TIPO_DOCUMENTO = 27" 'TICKET DE CAJA DEFINIDO EN CONTABILIDAD_CATALOGO_TIPO_DOCUMENTO
+        SQL &= ",@ORIGEN = " & ORIGEN
+        SQL &= ",@PROCESADO = 1"
+        SQL &= ",@USUARIO_CREACION = '" & Usuario & "'"
+        SQL &= ",@BANDERA = 'I'"
+        SQL &= ",@PRODUCTO = " & PRODUCTO
+        SQL &= ",@CANTIDAD = " & CANTIDAD
+        SQL &= ",@COSTO_UNITARIO = " & COSTO_UNI
+        SQL &= ",@PRECIO_UNITARIO = " & PRECIO_UNITARIO
+        SQL &= ",@PRECIO_TOTAL = " & CANTIDAD * PRECIO_UNITARIO
+        SQL &= ",@TIPO_MOV = " & 2
+        SQL &= ",@MOV = " & Movimiento
+
+        c_data2.Ejecutar_ConsultaSQL(SQL)
+
+    End Sub
+    Public Sub ActualizarEncabezadoFactura()
+        SQL = "Execute [dbo].[sp_CAFETERIA_FACTURACION_SIUD] "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@SERIE = '" & serie & "'"
+        SQL &= ",@NUMERO_FACTURA = " & correlativo_Actual
+        SQL &= ",@FECHA = N'" & Me.dtpFechaTrabajo.Text & "'"
+        SQL &= ",@IVA = " & (Val(A) * (Val(IVA) / 100)).ToString() 'JNJN
+
+        If (rbEfectivo.Checked = True) Then
+            SQL &= ",@DEUDA = " & Me.DESCUENTO 'SE LE INGRESA EL DESCUENTO PERO NO LE CAMBIEN EL NOMBRE DEL PARAMETRO
+            SQL &= ",@MONTO = " & txtTotalPagar.Text
+        Else
+            SQL &= ",@DEUDA = " & Me.DESCUENTO 'SE LE INGRESA EL DESCUENTO PERO NO LE CAMBIEN EL NOMBRE DEL PARAMETRO
+            SQL &= ",@MONTO = " & txtTotalPagar.Text
+        End If
+
+        SQL &= ",@BANDERA = 'U1'"
+    End Sub
+
+    Private Sub dgvDetalleVenta_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles dgvDetalleVenta.Click
+        Try
+            txtProducto.Text = PRODUCTO
+            txtDescripcion.Text = ""
+
+            PRODUCTO = dgvDetalleVenta.CurrentRow.Cells(5).Value.ToString()
+            item = dgvDetalleVenta.CurrentRow.Cells(0).Value.ToString()
+        Catch ex As Exception
+
+        End Try
+    End Sub
+    Private Sub btnCredito_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCredito.Click
+        rbCredito.Checked = True
+    End Sub
+
+    Private Sub Button5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button5.Click
+        rbEfectivo.Checked = True
+    End Sub
+    Public Sub ProcesarMovimientosInv()
+        SQL = ""
+        SQL &= "EXECUTE sp_INVENTARIOS_MOVIMIENTO_SIUD "
+        SQL &= "@COMPAÑIA = " & Compañia
+        SQL &= ",@BODEGA = " & Bodega
+        SQL &= ",@MOV1 = " & Movimiento
+        SQL &= ",@MOV = " & correlativo_Actual
+        SQL &= ",@SIUD = 'U2'"
+    End Sub
+    Private Sub btnCobrar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCobrar.Click
+        Dim barrido As String, sumatoria As String, tipoSolicitud As String, numeroSolicitud As Integer
+        If dgvDetalleVenta.RowCount = 0 Then
+            Exit Sub
+        Else
+            Try
+                'CALCULA EL NUMERO DE FACTURA SIGUIENTE
+                If NumeroFactura() = 0 Then
+                    MsgBox("Aviso...Verifique los permisos Legales para que esta caja facture!", MsgBoxStyle.Information)
+                    Exit Sub
+                End If
+
+                'ESTABLECE LOS MOVIMIENTOS DE INVENTARIOS EN PROCESADOS Y GUARDA EL NUMERO DE FACTURA
+                ProcesarMovimientosInv()
+
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+                Dim precio As Double, total As Double, cantidad As Double, descrip As String
+
+                'VERIFICA SI ES EMPLEADO DE LA CAFETERIA PARA APLICAR DESCUENTO
+                If (Contraseña_Cafeteria <> "") Then
+
+                    'DESCUENTO HECHO HASTA LA FECHA
+                    barrido = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_CALCULAR_MONTO_FACTURADO @CODIGO_EMPLEADO=" & txtCodigoEmpleado.Text & ", @FECHA='" & dtpFechaTrabajo.Text & "'", 0)
+                    'TOTAL A PAGAR EN ESTA FACTURA
+                    A = txtTotalPagar.Text
+
+                    'VERIFICA SI LA SUMA DEL TOTAL CONSUMIDO LE ALCANZA PARA HACER EL DESCUENTO
+                    If (Val(barrido) < (DESCUENTO)) Then
+                        If (Val(barrido) = 0) Then
+                            DESCUENTO = Val(A)
+                            txtTotalPagar.Text = 0
+                        Else
+                            A = Val(DESCUENTO) - Val(barrido)
+                            If Val(A) > Val(txtTotalPagar.Text) Then
+                                DESCUENTO = Val(txtTotalPagar.Text)
+                                txtTotalPagar.Text = 0
+                            End If
+                            If Val(A) < Val(txtTotalPagar.Text) Then
+                                txtTotalPagar.Text = Val(txtTotalPagar.Text) - Val(A)
+                                DESCUENTO = Val(A)
+                            End If
+                        End If
+
+                    Else
+                        saldo = 0.0
+                        DESCUX = 0
+                        DESCUENTO = 0
+
+                    End If
+                Else
+                    barrido = "0.0"
+                    DESCUX = 0
+                    A = txtTotalPagar.Text
+                    sumatoria = "0.0"
+                    saldo = "0.0"
+                    DESCUENTO = "0.0"
+                End If
+
+                TextBox3.Text = (Val(txtTotalPagar.Text) - Val(txtDescuentos.Text)).ToString()
+                Dim Cobro As New Cafeteria_Cobro(Me.TextBox3.Text)
+                Cobro.ShowDialog()
+
+                If Cobrar = 0 Then
+                    Exit Sub
+                End If
+                'CREA EL TICKET
+                For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+
+                    'producto/cantidad/costo unitario/precio unitario
+                    GuardarFactura(dgvDetalleVenta.Rows(i).Cells(5).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(7).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(8).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(9).Value.ToString())
+
+                    precio = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(9).Value.ToString()), 2)
+
+                    total = Math.Round(Convert.ToDouble((dgvDetalleVenta.Rows(i).Cells(9).Value.ToString() * dgvDetalleVenta.Rows(i).Cells(7).Value.ToString()).ToString.Trim()), 2)
+
+                    cantidad = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(7).Value.ToString().Trim()))
+
+                    descrip = dgvDetalleVenta.Rows(i).Cells(6).Value.ToString().Trim()
+
+                    If descrip.Length > 23 Then
+                        descrip = descrip.Substring(0, 22)
+                    End If
+                    listaTicket.Add(Math.Round(cantidad, 2).ToString("0.00") & " " & descrip.PadRight(22, " ") & " " & precio.ToString("0.00") & " " & total.ToString("0.00").PadLeft(5, " "))
+
+                Next
+
+                'ACTUALIZA EL MONTO TOTAL DE LA VENTA, DESCUENTO E IVA            
+                ActualizarEncabezadoFactura()
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                Button7.PerformClick()
+
+                'ELIMINA EL DETALLE DE LA TABLA TEMPORAL
+                For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+
+                    EliminarDetalle(2, dgvDetalleVenta.Rows(i).Cells(5).Value.ToString(), dgvDetalleVenta.Rows(i).Cells(0).Value.ToString())
+
+                    'SE EJECUTA LA ELIMINACION
+                    c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                Next
+
+
+                'SE CARGA EL DETALLE DE LA FACTURA
+                c_data2.Ejecutar_ConsultaSQL("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & Me.txtCaja.Text & ",@BANDERA=4")
+
+
+                CargarMenuDetalle()
+
+                'NumeroFactura()
+
+                Contraseña_Cafeteria = ""
+
+                btnCobrar.Enabled = False
+
+
+                limpiar_Cliente()
+                txtCodigoEmpleado.Focus()
+
+                cobrarx = True
+                listaTicket.Clear()
+                'CargarMenuDia()
+                btnNuevo.PerformClick()
+
+            Catch ex As Exception
+                MsgBox("Aviso...NO se ha procesado su factura", MsgBoxStyle.Information)
+
+            End Try
+        End If
+    End Sub
+    Public Sub limpiar_Cliente()
+        txtCodigoEmpleado.Text = ""
+        txtNombreEmpleado.Text = ""
+        txtTotalPagar.Text = "0.0"
+        TextBox3.Text = "0.0"
+        txtDescuentos.Text = "0.0"
+    End Sub
+
+    Public Sub Bloquear_Desbloquear(ByVal true_false)
+        txtProducto.Enabled = true_false
+        txtDescripcion.Enabled = true_false
+        txtCantidad.Enabled = true_false
+        btnCobrar.Enabled = true_false
+        txtNumTicket.Enabled = true_false
+    End Sub
+    Private Sub btnCargar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCargar.Click
+        If (dgvDetalleVenta.RowCount <= 0) Then
+            Try
+                If txtNumTicket.Text = "" Then
+                Else
+                    bandera1 = True
+                    CargarGrid("EXECUTE [dbo].[sp_CAFETERIA_FACTURACION_OBTENER_SERIE] @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ",@CAJA=" & txtCaja.Text & ",@NUMERO_FACTURA=" & txtNumTicket.Text & ", @BANDERA=5", DS02)
+                    dgvDetalleVenta.DataSource = DS02.Tables(0)
+                    If dgvDetalleVenta.RowCount > 0 Then
+                        Bloquear_Desbloquear(False)
+                    End If
+                    dgvDetalleVenta.Columns.Item(0).Visible = False
+                    dgvDetalleVenta.Columns.Item(1).Visible = False
+                    dgvDetalleVenta.Columns.Item(2).Visible = False
+                    dgvDetalleVenta.Columns.Item(3).Visible = False
+
+                    For i As Integer = 1 To Me.dgvMenuDia.ColumnCount
+                        Me.dgvMenuDia.Columns.Item(i - 1).AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells
+                    Next
+                    txtNombreEmpleado.Text = dgvDetalleVenta.Rows(0).Cells(24).Value.ToString()
+                    txtCodigoEmpleado.Text = dgvDetalleVenta.Rows(0).Cells(23).Value.ToString()
+                    'CALCULA LOS TOTALES DEL TICKET A ANULAR
+                    txtTotalPagar.Text = 0
+                    For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+                        txtTotalPagar.Text = Val(txtTotalPagar.Text) + Val(dgvDetalleVenta.Rows(i).Cells(10).Value.ToString()).ToString()
+                    Next
+
+                    TextBox3.Text = txtTotalPagar.Text
+
+                    serie = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@BODEGA=" & Bodega & ",@CAJA=" & Me.txtCaja.Text & ",@BANDERA=1", 0)
+                    Resolucion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 0)
+                    fecha_resolucion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 1)
+                    fecha_autorizacion = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 2)
+                    del = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 3)
+                    al = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_VERIFICAR_APERTURA_CIERRE @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @CAJA=" & Caja & ", @BANDERA=2", 4)
+                    txt_correlativo.Text = txtNumTicket.Text
+                End If
+            Catch ex As Exception
+                MsgBox("Aviso...El numero de la factura no coincide con ninguno en la base!", MsgBoxStyle.Information)
+            End Try
+        Else
+            MsgBox("Aviso...Debe termina la operacion iniciada!", MsgBoxStyle.Information)
+        End If
+    End Sub
+
+    Private Sub txtNumTicket_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles txtNumTicket.KeyPress
+        If Char.IsDigit(e.KeyChar) Then
+            e.Handled = False
+        ElseIf Char.IsControl(e.KeyChar) Then
+            e.Handled = False
+        Else
+            e.Handled = True
+        End If
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(13) Then
+            btnCargar.PerformClick()
+        End If
+    End Sub
+
+    Private Sub btnNuevo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnNuevo.Click
+        txtCodigoEmpleado.Text = ""
+        txtNombreEmpleado.Text = ""
+        txtProducto.Text = ""
+        txtDescripcion.Text = ""
+        txtCantidad.Text = ""
+        txtPrecio.Text = ""
+        txtTotal.Text = ""
+        txtExistencias.Text = ""
+        txtTotalPagar.Text = ""
+        TextBox3.Text = ""
+        TextBox2.Text = ""
+        txt_correlativo.Text = ""
+
+        txtCodigoEmpleado.Focus()
+
+        For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+
+            PRODUCTO = dgvDetalleVenta.Rows(i).Cells(5).Value.ToString()
+
+            item = dgvDetalleVenta.Rows(i).Cells(0).Value.ToString()
+
+            If (item <> "" And PRODUCTO <> "") Then
+
+                'SE RELLENA LA CADENA DE ELIMINACION DE MOVIMIENTO
+                EliminarDetalleTemporal("DD", PRODUCTO)
+
+                'SE EJECUTA LA ELIMINACION
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+
+                'SE RELLENA LA CADENA DE ELIMINACION DE TABLA TEMPORAL
+                EliminarDetalle(2, PRODUCTO, item)
+
+                'SE EJECUTA LA ELIMINACION
+                c_data2.Ejecutar_ConsultaSQL(SQL)
+
+            End If
+        Next
+
+        'SE CARGA EL DETALLE DE LA FACTURA
+        CargarMenuDetalle()
+
+        If (bandera1 = True) Then
+            Bloquear_Desbloquear(True)
+            dgvDetalleVenta.DataSource = Nothing
+            btnCobrar.Enabled = True
+            bandera1 = False
+            txtNumTicket.Text = ""
+            txtCodigoEmpleado.Text = ""
+            txtNombreEmpleado.Text = ""
+
+            txtCodigoEmpleado.Focus()
+        Else
+
+            cobrarx = False
+            btnCobrar.Enabled = True
+        End If
+
+    End Sub
+
+    Private Sub Button6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button6.Click
+        'Dim myValue As String = InputBox("Ingrese la contraseña", "Descuento Empleado")
+        If ((Bodega = 0) Or (Me.Caja = "")) Then
+            MsgBox("Aviso...La caja no ha sido aperturada", MsgBoxStyle.Information)
+        Else
+            If (dgvDetalleVenta.RowCount = 0) Then
+                MsgBox("Aviso...Debe tener producto agregado en la bandeja!", MsgBoxStyle.Information)
+            Else
+                Dim Facturacion_Contraseña As New Cafeteria_Facturacion_Contraseña(Compañia, Bodega, Me.Caja)
+                Facturacion_Contraseña.ShowDialog()
+                txtDescuentos.Text = Me.DESCUENTO
+            End If
+        End If
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        Dim frm_pb As New Inventario_Movimientos(Bodega)
+        frm_pb.ShowDialog()
+    End Sub
+    Public Sub GuardarTicket()
+
+        TICKET.AbrirArchivo()
+        TICKET.EscribirTicket(direccion)
+        TICKET.EscribirTicket("Ticket # " & correlativo_Actual & " " & descripcion_bodega & " CAJA No." & Caja)
+        TICKET.EscribirTicket("Fecha   :" & dtpFechaTrabajo.Value.ToString())
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Resolucion: " & Me.Resolucion)
+        TICKET.EscribirTicket("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Long Date"))
+        TICKET.EscribirTicket("Autorizada: " & Format(Me.fecha_autorizacion, "Long Date"))
+        TICKET.EscribirTicket("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0"))
+        TICKET.EscribirTicket("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0"))
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Codigo C:" & txtCodigoEmpleado.Text)
+        TICKET.EscribirTicket("Cliente :" & txtNombreEmpleado.Text)
+        TICKET.EscribirTicket("Tiempo C:" & tiempo_c)
+        TICKET.EscribirTicket("---------------------------------------")
+        '23 ESPACIOS PARA EL PRODUCTO
+        TICKET.EscribirTicket("Cant " & ("Producto").PadRight(23, " ") & "P/U  Prec.T")
+
+        For i As Integer = 0 To listaTicket.Count - 1
+            TICKET.EscribirTicket(listaTicket.Item(i).Trim)
+        Next
+        TICKET.EscribirTicket("")
+        Dim total As Double, descuento1 As Double, gravada As Double
+
+        gravada = Convert.ToDouble(txtTotalPagar.Text)
+
+        descuento1 = Convert.ToDouble(Me.DESCUENTO)
+
+
+        'TICKET.EscribirTicket(("DESC.APLICAR $:").PadRight(25, " ") & ("0.00").PadLeft(13, " "))
+        'TICKET.EscribirTicket(("DISP.DESCUEN $:").PadRight(25, " ") & ("0.00").PadLeft(12, " "))
+        If (rbEfectivo.Checked = True) Then
+            total = Val(txtTotalPagar.Text)
+        Else
+            'CREDITO 
+            total = Val(A)
+        End If
+        TICKET.EscribirTicket(("SUBTT. VTA. GRAVADA $:").PadRight(25, " ") & total.ToString("0.00").PadLeft(5, "."))
+        TICKET.EscribirTicket(("SUBTT. VTA. EXENTA $:").PadRight(25, " ") & ("0.00").PadLeft(8, " "))
+        TICKET.EscribirTicket(("SUBTT. VTA. DISPONIBLE $:").PadRight(25, " ") & ("0.00"))
+        TICKET.EscribirTicket(("SUBTT. VTA. NO SUJ. $:").PadRight(25, " ") & ("0.00").PadLeft(9, " "))
+
+        TICKET.EscribirTicket(("VENTA TOTAL. $:").PadRight(24, " ") & total.ToString("0.00").PadLeft(15, " "))
+        TICKET.EscribirTicket("")
+
+        If (txtTotalPagar.Text > 200) Then
+            TICKET.EscribirTicket("")
+            TICKET.EscribirTicket("Nombre: ")
+            TICKET.EscribirTicket("Nit/Dui:")
+            TICKET.EscribirTicket("F.______________")
+        End If
+
+        TICKET.EscribirTicket("")
+        TICKET.EscribirTicketFiscal(Chr(27) & Chr(105))
+        TICKET.EscribirTicketFiscal(Chr(25))
+        TICKET.CerrarArchivo()
+    End Sub
+    Public Sub ReimprimirTicket()
+
+        TICKET.AbrirArchivo()
+        TICKET.EscribirTicket(direccion)
+        TICKET.EscribirTicket("Ticket # " & txt_correlativo.Text & " " & descripcion_bodega & " CAJA No." & Caja)
+        TICKET.EscribirTicket("Fecha   :" & dtpFechaTrabajo.Value.ToString())
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Resolucion: " & Me.Resolucion)
+        TICKET.EscribirTicket("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Long Date"))
+        TICKET.EscribirTicket("Autorizada: " & Format(Me.fecha_autorizacion, "Long Date"))
+        TICKET.EscribirTicket("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0"))
+        TICKET.EscribirTicket("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0"))
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Codigo C:" & txtCodigoEmpleado.Text)
+        TICKET.EscribirTicket("Cliente :" & txtNombreEmpleado.Text)
+        TICKET.EscribirTicket("Tiempo C:" & tiempo_c)
+        TICKET.EscribirTicket("---------------------------------------")
+        '23 ESPACIOS PARA EL PRODUCTO
+        TICKET.EscribirTicket("Cant " & ("Producto").PadRight(23, " ") & " P/U  Prec.T")
+        Dim precio As Double, total1 As Double, cantidad As Double, descrip As String
+        For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+            precio = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(9).Value.ToString()), 2)
+
+            total1 = Math.Round(Convert.ToDouble((dgvDetalleVenta.Rows(i).Cells(9).Value.ToString() * dgvDetalleVenta.Rows(i).Cells(7).Value.ToString()).ToString.Trim()), 2)
+
+            cantidad = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(7).Value.ToString().Trim()))
+
+            descrip = dgvDetalleVenta.Rows(i).Cells(6).Value.ToString().Trim()
+
+            If descrip.Length > 23 Then
+                descrip = descrip.Substring(0, 22)
+            End If
+
+            TICKET.EscribirTicket(Math.Round(cantidad, 2).ToString("0.00") & " " & descrip.PadRight(22, " ") & " " & precio.ToString("0.00") & " " & total1.ToString("0.00").PadLeft(5, " "))
+        Next
+        TICKET.EscribirTicket("")
+        Dim total As Double, descuento1 As Double, gravada As Double
+
+        gravada = Convert.ToDouble(txtTotalPagar.Text)
+
+        descuento1 = Convert.ToDouble(Me.DESCUENTO)
+
+
+        'TICKET.EscribirTicket(("DESC.APLICAR $:").PadRight(25, " ") & ("0.00").PadLeft(13, " "))
+        'TICKET.EscribirTicket(("DISP.DESCUEN $:").PadRight(25, " ") & ("0.00").PadLeft(12, " "))
+        If (rbEfectivo.Checked = True) Then
+            total = Val(txtTotalPagar.Text)
+        Else
+            'CREDITO 
+            total = Val(A)
+        End If
+        TICKET.EscribirTicket(("SUBTT. VTA. GRAVADA $:").PadRight(25, " ") & total.ToString("0.00").PadLeft(5, "."))
+        TICKET.EscribirTicket(("SUBTT. VTA. EXENTA $:").PadRight(25, " ") & ("0.00").PadLeft(8, " "))
+        TICKET.EscribirTicket(("SUBTT. VTA. DISPONIBLE $:").PadRight(25, " ") & ("0.00"))
+        TICKET.EscribirTicket(("SUBTT. VTA. NO SUJ. $:").PadRight(25, " ") & ("0.00").PadLeft(9, " "))
+
+        TICKET.EscribirTicket(("VENTA TOTAL. $:").PadRight(24, " ") & total.ToString("0.00").PadLeft(15, "."))
+        TICKET.EscribirTicket("")
+
+        If (txtTotalPagar.Text > 200) Then
+            TICKET.EscribirTicket("")
+            TICKET.EscribirTicket("Nombre: ")
+            TICKET.EscribirTicket("Nit/Dui:")
+            TICKET.EscribirTicket("F.______________")
+        End If
+
+        TICKET.EscribirTicket("")
+        TICKET.EscribirTicketFiscal(Chr(27) & Chr(105))
+        TICKET.EscribirTicketFiscal(Chr(25))
+        TICKET.CerrarArchivo()
+    End Sub
+    Public Sub GuardarTicketAnulado()
+
+        TICKET.AbrirArchivo()
+        TICKET.EscribirTicket("----------------ANULADO----------------")
+        TICKET.EscribirTicket(direccion)
+        TICKET.EscribirTicket("Ticket # " & txt_correlativo.Text & " " & descripcion_bodega & " CAJA No." & Caja)
+        TICKET.EscribirTicket("Fecha   :" & dtpFechaTrabajo.Value.ToString())
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Resolucion: " & Me.Resolucion)
+        TICKET.EscribirTicket("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Long Date"))
+        TICKET.EscribirTicket("Autorizada: " & Format(Me.fecha_autorizacion, "Long Date"))
+        TICKET.EscribirTicket("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0"))
+        TICKET.EscribirTicket("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0"))
+        TICKET.EscribirTicket("---------------------------------------")
+        TICKET.EscribirTicket("Codigo C:" & txtCodigoEmpleado.Text)
+        TICKET.EscribirTicket("Cliente :" & txtNombreEmpleado.Text)
+        TICKET.EscribirTicket("Tiempo C:" & tiempo_c)
+        TICKET.EscribirTicket("---------------------------------------")
+        '23 ESPACIOS PARA EL PRODUCTO
+        TICKET.EscribirTicket("Cant " & ("Producto").PadRight(22, " ") & " P/U  Prec.T")
+        Dim precio As Double, total1 As Double = 0, cantidad As Double, descrip As String
+
+        For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+            precio = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(9).Value.ToString()), 2)
+
+            total1 = Math.Round(Convert.ToDouble((dgvDetalleVenta.Rows(i).Cells(9).Value.ToString() * dgvDetalleVenta.Rows(i).Cells(7).Value.ToString()).ToString.Trim()), 2)
+
+            cantidad = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(7).Value.ToString().Trim()))
+
+            descrip = dgvDetalleVenta.Rows(i).Cells(6).Value.ToString().Trim()
+
+            If descrip.Length > 23 Then
+                descrip = descrip.Substring(0, 22)
+            End If
+
+            TICKET.EscribirTicket(Math.Round(cantidad, 2).ToString("0.00") & " " & descrip.PadRight(22, " ") & " " & precio.ToString("0.00") & " -" & total1.ToString("0.00").PadLeft(5, " "))
+        Next
+        TICKET.EscribirTicket("")
+
+        Dim total As Double, descuento1 As Double, gravada As Double
+
+        gravada = Convert.ToDouble(txtTotalPagar.Text)
+
+        descuento1 = Convert.ToDouble(Me.DESCUENTO)
+
+
+        'TICKET.EscribirTicket(("DESC.APLICAR $:").PadRight(25, " ") & ("0.00").PadLeft(13, " "))
+        'TICKET.EscribirTicket(("DISP.DESCUEN $:").PadRight(25, " ") & ("0.00").PadLeft(12, " "))
+        If (rbEfectivo.Checked = True) Then
+            total = Val(txtTotalPagar.Text)
+        Else
+            'CREDITO 
+            total = Val(A)
+        End If
+        TICKET.EscribirTicket(("SUBTT. VTA. GRAVADA $:").PadRight(25, " ") & "-" & total.ToString("0.00").PadLeft(5, "."))
+        TICKET.EscribirTicket(("SUBTT. VTA. EXENTA $:").PadRight(25, " ") & ("0.00").PadLeft(8, " "))
+        TICKET.EscribirTicket(("SUBTT. VTA. DISPONIBLE $:").PadRight(25, " ") & ("0.00"))
+        TICKET.EscribirTicket(("SUBTT. VTA. NO SUJ. $:").PadRight(25, " ") & ("0.00").PadLeft(9, " "))
+
+        TICKET.EscribirTicket(("VENTA TOTAL. $:").PadRight(23, " ") & "-" & total.ToString("0.00").PadLeft(15, " "))
+        TICKET.EscribirTicket("")
+
+        If (txtTotalPagar.Text > 200) Then
+            TICKET.EscribirTicket("")
+            TICKET.EscribirTicket("Nombre: ")
+            TICKET.EscribirTicket("Nit/Dui:")
+            TICKET.EscribirTicket("F.______________")
+        End If
+
+        TICKET.EscribirTicket("")
+        TICKET.EscribirTicketFiscal(Chr(27) & Chr(105))
+        TICKET.EscribirTicketFiscal(Chr(25))
+        TICKET.CerrarArchivo()
+    End Sub
+    Public Sub GuardarTicketFiscal()
+
+        TICKET.AbrirArchivoFiscal()
+        TICKET.EscribirTicketFiscal(direccion)
+        TICKET.EscribirTicketFiscal(("Ticket # " & correlativo_Actual).PadRight(39, " ") & "   " & ("Ticket # " & correlativo_Actual).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Bodega : " & descripcion_bodega).PadRight(39, " ") & "   " & ("Bodega : " & descripcion_bodega).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("CAJA No." & Caja).PadRight(39, " ") & "   " & ("CAJA No." & Caja).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Fecha   :" & dtpFechaTrabajo.Value.ToString()).PadRight(39, " ") & "   " & ("Fecha   :" & dtpFechaTrabajo.Value.ToString()).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        TICKET.EscribirTicketFiscal(("Resolucion: " & Me.Resolucion).PadRight(39, " ") & "   " & ("Resolucion: " & Me.Resolucion).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Short Date")).PadRight(39, " ") & "   " & ("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Short Date")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Autorizada: " & Format(Me.fecha_autorizacion, "Short Date")).PadRight(39, " ") & "   " & ("Autorizada: " & Format(Me.fecha_autorizacion, "Short Date")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0")).PadRight(39, " ") & "   " & ("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0")).PadRight(39, " ") & "   " & ("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        TICKET.EscribirTicketFiscal(("Codigo C:" & txtCodigoEmpleado.Text).PadRight(39, " ") & "   " & ("Codigo C:" & txtCodigoEmpleado.Text).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Cliente :" & txtNombreEmpleado.Text.PadLeft(39, " ")) & "   " & ("Cliente :" & txtNombreEmpleado.Text.PadLeft(39, " ")))
+        TICKET.EscribirTicketFiscal(("Tiempo C:" & tiempo_c).PadRight(39, " ") & "   " & ("Tiempo C:" & tiempo_c).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        '23 ESPACIOS PARA EL PRODUCTO
+        TICKET.EscribirTicketFiscal(("Cant Producto---------------P/U--Prec.T").PadRight(39, " ") & "   " & ("Cant Producto---------------P/U--Prec.T").PadRight(39, " "))
+
+        For i As Integer = 0 To listaTicket.Count - 1
+            TICKET.EscribirTicketFiscal((listaTicket.Item(i).Trim).PadRight(39, " ") & "   " & (listaTicket.Item(i).Trim).PadRight(39, " "))
+        Next
+        TICKET.EscribirTicketFiscal("")
+        Dim total As Double, descuento1 As Double, gravada As Double
+
+        gravada = Convert.ToDouble(txtTotalPagar.Text)
+
+        descuento1 = Convert.ToDouble(Me.DESCUENTO)
+
+
+        TICKET.EscribirTicketFiscal(("         Desc.Aplicar    :" & descuento1.ToString("0.00").PadLeft(13, ".")).PadRight(39, " ") & "   " & ("         Desc.Aplicar    :" & descuento1.ToString("0.00").PadLeft(13, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("         Dispon Desc.    :" & saldo.ToString("0.00").PadLeft(13, ".")).PadRight(39, " ") & "   " & ("         Dispon Desc.    :" & saldo.ToString("0.00").PadLeft(13, ".")).PadRight(39, " "))
+        If (rbEfectivo.Checked = True) Then
+            total = Val(txtTotalPagar.Text) + Val(Me.DESCUENTO)
+        Else
+            'CREDITO 
+            total = Val(A)
+        End If
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Gravada     $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " ") & "   " & ("Subtt. Vta. Gravada     $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Exenta      $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. Exenta      $:.........0.00").PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Disponible  $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. Disponible  $:.........0.00").PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. No Suj.     $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. No Suj.     $:.........0.00").PadRight(39, " "))
+
+        TICKET.EscribirTicketFiscal(("Venta Total             $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " ") & "   " & ("Venta Total             $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("")
+
+        If (txtTotalPagar.Text > 200) Then
+            TICKET.EscribirTicketFiscal("")
+            TICKET.EscribirTicketFiscal("Nombre: ")
+            TICKET.EscribirTicketFiscal("Nit/Dui:")
+            TICKET.EscribirTicketFiscal("F.______________")
+        End If
+
+        TICKET.EscribirTicketFiscal("")
+        TICKET.EscribirTicketFiscal(Chr(27) & Chr(105))
+        TICKET.EscribirTicketFiscal(Chr(25))
+        TICKET.CerrarArchivoFiscal()
+    End Sub
+    Public Sub GuardarTicketFiscalAnulado()
+
+        TICKET.AbrirArchivoFiscal()
+        TICKET.EscribirTicketFiscal("----------------ANULADO----------------" & "   " & "----------------ANULADO----------------")
+        TICKET.EscribirTicketFiscal(direccion)
+        TICKET.EscribirTicketFiscal(("Ticket # " & correlativo_Actual).PadRight(39, " ") & "   " & ("Ticket # " & correlativo_Actual).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Bodega : " & descripcion_bodega).PadRight(39, " ") & "   " & ("Bodega : " & descripcion_bodega).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("CAJA No." & Caja).PadRight(39, " ") & "   " & ("CAJA No." & Caja).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Fecha   :" & dtpFechaTrabajo.Value.ToString()).PadRight(39, " ") & "   " & ("Fecha   :" & dtpFechaTrabajo.Value.ToString()).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        TICKET.EscribirTicketFiscal(("Resolucion: " & Me.Resolucion).PadRight(39, " ") & "   " & ("Resolucion: " & Me.Resolucion).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Short Date")).PadRight(39, " ") & "   " & ("Fecha de Resolucion: " & Format(Me.fecha_resolucion, "Short Date")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Autorizada: " & Format(Me.fecha_autorizacion, "Short Date")).PadRight(39, " ") & "   " & ("Autorizada: " & Format(Me.fecha_autorizacion, "Short Date")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0")).PadRight(39, " ") & "   " & ("  Del " & serie.PadRight(6, "0") & del.PadLeft(6, "0")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0")).PadRight(39, " ") & "   " & ("   al " & serie.PadRight(6, "0") & al.PadLeft(6, "0")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        TICKET.EscribirTicketFiscal(("Codigo C:" & txtCodigoEmpleado.Text).PadRight(39, " ") & "   " & ("Codigo C:" & txtCodigoEmpleado.Text).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Cliente :" & txtNombreEmpleado.Text.PadLeft(39, " ")) & "   " & ("Cliente :" & txtNombreEmpleado.Text.PadLeft(39, " ")))
+        TICKET.EscribirTicketFiscal(("Tiempo C:" & tiempo_c).PadRight(39, " ") & "   " & ("Tiempo C:" & tiempo_c).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("---------------------------------------" & "   " & "---------------------------------------")
+        '23 ESPACIOS PARA EL PRODUCTO
+        TICKET.EscribirTicketFiscal(("Cant Producto---------------P/U--Prec.T").PadRight(39, " ") & "   " & ("Cant Producto---------------P/U--Prec.T").PadRight(39, " "))
+
+        Dim precio As Double, total1 As Double, cantidad As Double, descrip As String
+        For i As Integer = 0 To dgvDetalleVenta.RowCount - 1
+            precio = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(9).Value.ToString()), 2)
+
+            total1 = Math.Round(Convert.ToDouble((dgvDetalleVenta.Rows(i).Cells(9).Value.ToString() * dgvDetalleVenta.Rows(i).Cells(7).Value.ToString()).ToString.Trim()), 2)
+
+            cantidad = Math.Round(Convert.ToDouble(dgvDetalleVenta.Rows(i).Cells(7).Value.ToString().Trim()))
+
+            descrip = dgvDetalleVenta.Rows(i).Cells(6).Value.ToString().Trim()
+
+            TICKET.EscribirTicket(Math.Round(cantidad, 2).ToString("0.00") & " " & descrip.PadRight(22, " ") & " " & precio.ToString("0.00") & " " & total1.ToString("0.00").PadLeft(5, " "))
+        Next
+
+        TICKET.EscribirTicketFiscal("")
+        Dim total As Double, descuento1 As Double, gravada As Double
+
+        gravada = Convert.ToDouble(txtTotalPagar.Text)
+
+        descuento1 = Convert.ToDouble(Me.DESCUENTO)
+
+
+        TICKET.EscribirTicketFiscal(("         Desc.Aplicar    :" & descuento1.ToString("0.00").PadLeft(13, ".")).PadRight(39, " ") & "   " & ("         Desc.Aplicar    :" & descuento1.ToString("0.00").PadLeft(13, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("         Dispon Desc.    :" & saldo.ToString("0.00").PadLeft(13, ".")).PadRight(39, " ") & "   " & ("         Dispon Desc.    :" & saldo.ToString("0.00").PadLeft(13, ".")).PadRight(39, " "))
+        If (rbEfectivo.Checked = True) Then
+            total = Val(txtTotalPagar.Text) + Val(Me.DESCUENTO)
+        Else
+            'CREDITO 
+            total = Val(A)
+        End If
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Gravada     $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " ") & "   " & ("Subtt. Vta. Gravada     $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Exenta      $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. Exenta      $:.........0.00").PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. Disponible  $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. Disponible  $:.........0.00").PadRight(39, " "))
+        TICKET.EscribirTicketFiscal(("Subtt. Vta. No Suj.     $:.........0.00").PadRight(39, " ") & "   " & ("Subtt. Vta. No Suj.     $:.........0.00").PadRight(39, " "))
+
+        TICKET.EscribirTicketFiscal(("Venta Total             $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " ") & "   " & ("Venta Total             $:" & total.ToString("0.00").PadLeft(9, ".")).PadRight(39, " "))
+        TICKET.EscribirTicketFiscal("")
+
+        If (txtTotalPagar.Text > 200) Then
+            TICKET.EscribirTicketFiscal("")
+            TICKET.EscribirTicketFiscal("Nombre: ")
+            TICKET.EscribirTicketFiscal("Nit/Dui:")
+            TICKET.EscribirTicketFiscal("F.______________")
+        End If
+
+        TICKET.EscribirTicketFiscal("")
+        TICKET.EscribirTicketFiscal(Chr(27) & Chr(105))
+        TICKET.EscribirTicketFiscal(Chr(25))
+        TICKET.CerrarArchivoFiscal()
+    End Sub
+    Private Sub Button7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
+        If dgvDetalleVenta.RowCount = 0 Then
+            Exit Sub
+        Else
+            If txtNumTicket.Enabled = False Then
+                If (cobrarx = False) Then
+                    Dim tipo_impresor As String
+                    tipo_impresor = c_data2.leerDataeader("execute sp_TIPO_IMPRESOR @COMPAÑIA=" & Compañia & ", @BODEGA= " & Bodega & ",@CAJA=" & Caja, 0)
+                    If tipo_impresor = "False" Then
+                        ReimprimirTicket()
+                    Else
+                        ReimprimirTicket()
+                    End If
+                Else
+                    MsgBox("Aviso!", MsgBoxStyle.Information)
+                End If
+            Else
+                If (cobrarx = False) Then
+                    Dim tipo_impresor As String
+                    tipo_impresor = c_data2.leerDataeader("execute sp_TIPO_IMPRESOR @COMPAÑIA=" & Compañia & ", @BODEGA= " & Bodega & ",@CAJA=" & Caja, 0)
+                    If tipo_impresor = "False" Then
+                        GuardarTicket()
+                    Else
+                        GuardarTicketFiscal()
+                    End If
+                Else
+                    MsgBox("Aviso!", MsgBoxStyle.Information)
+                End If
+            End If
+        End If
+
+    End Sub
+
+    Private Sub txtCantidad_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtCantidad.TextChanged
+        Me.txtTotal.Text = (Val(txtCantidad.Text) * Val(Me.txtPrecio.Text)).ToString()
+    End Sub
+
+
+    Private Sub Cafeteria_Facturacion_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles MyBase.KeyDown
+        'When the function keys are pressed, FuncKeysModule is called. 
+        If e.KeyValue = Keys.F1 Or Keys.F2 Or Keys.F3 Or Keys.F4 Or Keys.F5 Or Keys.F6 Or Keys.F7 Or Keys.F8 Or Keys.F9 Or Keys.F10 Or Keys.F11 Or Keys.F12 Then
+            FuncKeysModule(e.KeyValue)
+            e.Handled = True
+        End If
+    End Sub
+
+    Public Sub FuncKeysModule(ByVal value As Keys)
+        'Check what function key is in a pressed state, and then perform the corresponding action.
+        Select Case value
+            Case Keys.F1
+                'Add the code for the function key F1 here.
+                btnCredito.PerformClick()
+            Case Keys.F2
+                'Add the code for the function key F2 here.
+                btnCobrar.PerformClick()
+            Case Keys.F3
+                'Add the code for the function key F3 here.
+                btnNuevo.PerformClick()
+            Case Keys.F4
+                'Add the code for the function key F3 here.
+                btnBuscarProducto.PerformClick()
+            Case Keys.F5
+                'Add the code for the function key F5 here.
+                Button5.PerformClick()
+            Case Keys.F6
+                'Add the code for the function key F5 here.
+                Button7.PerformClick()
+            Case Keys.F7
+                'Add the code for the function key F7 here.
+                Button1.PerformClick()
+            Case Keys.F8
+                btnBuscarProducto.PerformClick()
+            Case Keys.F9
+                'Add the code for the function key F9 here.
+                Button6.PerformClick()
+            Case Keys.F10
+                'Add the code for the function key F10 here.
+                btnEliminarProducto.PerformClick()
+            Case Keys.F11
+                dgvMenuDia.DataSource = Nothing
+                If Estado = Nothing Or Bodega = 0 Or Tiempo = 0 Or Caja = Nothing Then
+                    txtCantidad.Enabled = False
+                    Button7.Enabled = False
+                    btnCobrar.Enabled = False
+                    MsgBox("Aviso...No hay tiempo de comida aperturado!", MsgBoxStyle.Information)
+                Else
+                    CargarMenuDia()
+
+                End If
+            Case Keys.F12
+                Me.Close()
+            Case Keys.Left
+                TextBox2.Focus()
+            Case Keys.Right
+                If txtCantidad.Text = "" Then
+                    MsgBox("Aviso...Ingrese primero el codigo del producto!", MsgBoxStyle.Information)
+                Else
+                    txtCantidad.Focus()
+                End If
+
+        End Select
+    End Sub
+
+    Private Sub TextBox1_TextChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles TextBox1.TextChanged
+        txtCodigoEmpleado.Text = TextBox1.Text
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        If dgvDetalleVenta.RowCount <> 0 Then
+            MsgBox("Aviso...Tiene productos en bandeja!", MsgBoxStyle.Information)
+        Else
+            Me.Close()
+        End If
+    End Sub
+    Public Sub leerBarra()
+        If (txtCodigoEmpleado.Text = "") Then
+            Label5.Text = "Debe digitar el codigo del empleado"
+        Else
+            Label5.Text = ""
+            txtNombreEmpleado.Text = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_BUSCAR_EMPLEADO_POR_CODIGO @COMPAÑIA=" & Compañia & ",@CODIGO='" & txtCodigoEmpleado.Text.PadLeft(6, "0") & "',@BANDERA=0", 1)
+
+            codigo_as = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_BUSCAR_EMPLEADO_POR_CODIGO @COMPAÑIA=" & Compañia & ",@CODIGO='" & txtCodigoEmpleado.Text.PadLeft(6, "0") & "',@BANDERA=0", 3)
+            codigo_buxi = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_BUSCAR_EMPLEADO_POR_CODIGO @COMPAÑIA=" & Compañia & ",@CODIGO='" & txtCodigoEmpleado.Text.PadLeft(6, "0") & "',@BANDERA=0", 0)
+            ORIGEN = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_BUSCAR_EMPLEADO_POR_CODIGO @COMPAÑIA=" & Compañia & ",@CODIGO='" & txtCodigoEmpleado.Text.PadLeft(6, "0") & "',@BANDERA=0", 2)
+
+            If txtNombreEmpleado.Text = "" Then
+                txtCodigoEmpleado.Text = ""
+                txtCodigoEmpleado.Focus()
+
+            Else
+                'CALCULA EL DESCUENTO VIGENTE
+                'EXECUTE [dbo].[sp_CAFETERIA_FACTURACION_OBTENER_SERIE] @COMPAÑIA=1, @COD_EMPLEADO_AS='06208', @COD_EMPLEADO=4127, @BANDERA=7
+                DESCUENTO = c_data2.leerDataeader("EXECUTE sp_CAFETERIA_FACTURACION_OBTENER_SERIE @COMPAÑIA=" & Compañia & ",@COD_EMPLEADO_AS='" & codigo_as & "',@COD_EMPLEADO=" & codigo_buxi & ", @BANDERA=7", 0)
+                If (Val(DESCUENTO) > 0) Then
+                    rbCredito.Checked = True
+                    rbEfectivo.Checked = False
+                Else
+                    rbCredito.Checked = False
+                    rbEfectivo.Checked = True
+                End If
+                TextBox2.Focus()
+            End If
+        End If
+    End Sub
+
+
+    Private Sub txtCodigoEmpleado_Leave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles txtCodigoEmpleado.Leave
+        leerBarra()
+    End Sub
+
+
+
+    Private Sub TextBox2_KeyPress(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyPressEventArgs) Handles TextBox2.KeyPress
+        If Char.IsDigit(e.KeyChar) Then
+            e.Handled = False
+        ElseIf Char.IsControl(e.KeyChar) Then
+            e.Handled = False
+        Else
+            e.Handled = True
+        End If
+        If e.KeyChar = Microsoft.VisualBasic.ChrW(13) Then
+            'Try
+            If TextBox2.Text = "" Then
+                Label5.Text = "Debe digitar el codigo del producto"
+            Else
+                'BUSCA SI ESE CODIGO EXISTE EN LA BODEGA
+                Label5.Text = ""
+                Me.txtDescripcion.Text = c_data2.leerDataeader("EXECUTE INVENTARIO_BUSCAR_PRODUCTO_POR_CODIGO @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @PRODUCTO=" & Me.TextBox2.Text & ", @BANDERA=4", 1)
+
+                Me.txtProducto.Text = c_data2.leerDataeader("EXECUTE INVENTARIO_BUSCAR_PRODUCTO_POR_CODIGO @COMPAÑIA=" & Compañia & ", @BODEGA=" & Bodega & ", @PRODUCTO=" & Me.TextBox2.Text & ", @BANDERA=4", 0)
+
+                'VERIFICA EL TIPO DE PRODUCTO QUE ES, PARA LUEGO DETERMINA LOS COSTOS
+                For i As Integer = 0 To dgvMenuDia.RowCount - 1
+
+                    If dgvMenuDia.Rows(i).Cells(2).Value.ToString() = TextBox2.Text Then
+                        'CALCULA LAS EXISTENCIAS
+                        Me.txtPrecio.Text = dgvMenuDia.Rows(i).Cells(4).Value.ToString()
+                        TIPOX = dgvMenuDia.Rows(i).Cells(5).Value.ToString()
+
+                    End If
+
+                Next
+
+                If txtDescripcion.Text = "" Then
+                    MsgBox("Aviso...Codigo No existe en esta bodega o no esta programado para este turno!", MsgBoxStyle.Information)
+                Else
+                    If (txtCodigoEmpleado.Text = "") Then
+
+                        Label5.Text = "Debe digitar el codigo del empleado"
+                        txtCodigoEmpleado.Focus()
+                    Else
+                        Label5.Text = ""
+                        If (txtProducto.Text = "") Then
+                        Else
+                            txtExistencias.Text = c_data2.leerDataeader("SELECT DBO.calcular_existencia_actual(" & Compañia & "," & Bodega & "," & txtProducto.Text & ",'" & Format(Me.dtpFechaTrabajo.Value, "dd-MM-yyyy hh:mm:ss") & "')", 0)
+                            Me.txtCantidad.Text = "1"
+                            Me.txtCantidad.Focus()
+                        End If
+
+
+                    End If
+
+                End If
+            End If
+            'Catch ex As Exception
+            '    txtProducto.Text = ""
+            '    MsgBox("Aviso...DEBE INGRESAR UN CODIGO", MsgBoxStyle.Information)
+            'End Try
+        End If
+    End Sub
+
+
+    Private Sub txtCantidad_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtCantidad.KeyDown
+
+        'flecha Hacia ABAJO
+        If (e.KeyCode = Keys.Left) Then
+            TextBox2.Focus()
+        End If
+
+
+    End Sub
+
+    Private Sub TextBox2_KeyDown(ByVal sender As System.Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles TextBox2.KeyDown
+        If (e.KeyCode = Keys.Right) Then
+            txtCantidad.Focus()
+        End If
+    End Sub
+
+   
+    
+    Private Sub GroupBox7_Enter(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles GroupBox7.Enter
+
+    End Sub
+End Class
