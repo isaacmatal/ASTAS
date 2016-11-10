@@ -98,12 +98,6 @@ Partial Class Activo_Fijo_Bien
         Me.nudVidaUtilFiscal = New System.Windows.Forms.NumericUpDown
         Me.tpCuentas = New System.Windows.Forms.TabPage
         Me.dgvCuentasContables = New System.Windows.Forms.DataGridView
-        Me.Buscar = New System.Windows.Forms.DataGridViewButtonColumn
-        Me.CUENTA = New System.Windows.Forms.DataGridViewTextBoxColumn
-        Me.BIEN = New System.Windows.Forms.DataGridViewTextBoxColumn
-        Me.CUENTACONTABLE = New System.Windows.Forms.DataGridViewTextBoxColumn
-        Me.PORCENTAGE_ASIGNADO = New System.Windows.Forms.DataGridViewTextBoxColumn
-        Me.CUENTAREAL = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.btnCerrar = New System.Windows.Forms.Button
         Me.btnGuardar = New System.Windows.Forms.Button
         Me.errP = New System.Windows.Forms.ErrorProvider(Me.components)
@@ -144,9 +138,16 @@ Partial Class Activo_Fijo_Bien
         Me.Label44 = New System.Windows.Forms.Label
         Me.txtObservacionesBaja = New System.Windows.Forms.TextBox
         Me.TabPage4 = New System.Windows.Forms.TabPage
+        Me.Button1 = New System.Windows.Forms.Button
         Me.dgvMovimientos = New System.Windows.Forms.DataGridView
         Me.txtComentarios = New System.Windows.Forms.TextBox
         Me.lblComentarios = New System.Windows.Forms.Label
+        Me.Buscar = New System.Windows.Forms.DataGridViewButtonColumn
+        Me.CUENTA = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.BIEN = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.CUENTACONTABLE = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.PORCENTAGE_ASIGNADO = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.CUENTAREAL = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.grpAsignacion.SuspendLayout()
         CType(Me.nudCantidad, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabControl1.SuspendLayout()
@@ -1053,50 +1054,8 @@ Partial Class Activo_Fijo_Bien
         Me.dgvCuentasContables.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Buscar, Me.CUENTA, Me.BIEN, Me.CUENTACONTABLE, Me.PORCENTAGE_ASIGNADO, Me.CUENTAREAL})
         Me.dgvCuentasContables.Location = New System.Drawing.Point(5, 3)
         Me.dgvCuentasContables.Name = "dgvCuentasContables"
-        Me.dgvCuentasContables.Size = New System.Drawing.Size(510, 150)
+        Me.dgvCuentasContables.Size = New System.Drawing.Size(715, 150)
         Me.dgvCuentasContables.TabIndex = 1
-        '
-        'Buscar
-        '
-        Me.Buscar.HeaderText = "Buscar"
-        Me.Buscar.Name = "Buscar"
-        Me.Buscar.Text = "Buscar"
-        Me.Buscar.ToolTipText = "Buscar cuenta contable"
-        Me.Buscar.Width = 60
-        '
-        'CUENTA
-        '
-        Me.CUENTA.DataPropertyName = "CUENTA"
-        Me.CUENTA.HeaderText = "CUENTA"
-        Me.CUENTA.Name = "CUENTA"
-        Me.CUENTA.Visible = False
-        '
-        'BIEN
-        '
-        Me.BIEN.DataPropertyName = "BIEN"
-        Me.BIEN.HeaderText = "BIEN"
-        Me.BIEN.Name = "BIEN"
-        Me.BIEN.Visible = False
-        '
-        'CUENTACONTABLE
-        '
-        Me.CUENTACONTABLE.DataPropertyName = "CUENTACONTABLE"
-        Me.CUENTACONTABLE.HeaderText = "Cuenta Contable"
-        Me.CUENTACONTABLE.Name = "CUENTACONTABLE"
-        Me.CUENTACONTABLE.Width = 300
-        '
-        'PORCENTAGE_ASIGNADO
-        '
-        Me.PORCENTAGE_ASIGNADO.DataPropertyName = "PORCENTAGE_ASIGNADO"
-        Me.PORCENTAGE_ASIGNADO.HeaderText = "Porcentaje"
-        Me.PORCENTAGE_ASIGNADO.Name = "PORCENTAGE_ASIGNADO"
-        '
-        'CUENTAREAL
-        '
-        Me.CUENTAREAL.DataPropertyName = "CUENTAREAL"
-        Me.CUENTAREAL.HeaderText = "CUENTAREAL"
-        Me.CUENTAREAL.Name = "CUENTAREAL"
-        Me.CUENTAREAL.Visible = False
         '
         'btnCerrar
         '
@@ -1573,6 +1532,7 @@ Partial Class Activo_Fijo_Bien
         '
         'TabPage4
         '
+        Me.TabPage4.Controls.Add(Me.Button1)
         Me.TabPage4.Controls.Add(Me.dgvMovimientos)
         Me.TabPage4.Location = New System.Drawing.Point(4, 22)
         Me.TabPage4.Name = "TabPage4"
@@ -1582,16 +1542,24 @@ Partial Class Activo_Fijo_Bien
         Me.TabPage4.Text = "Movimientos del Activo Fijo"
         Me.TabPage4.UseVisualStyleBackColor = True
         '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(935, 286)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 82
+        Me.Button1.Text = "Imprimir"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
         'dgvMovimientos
         '
         Me.dgvMovimientos.AllowUserToAddRows = False
         Me.dgvMovimientos.AllowUserToDeleteRows = False
         Me.dgvMovimientos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvMovimientos.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvMovimientos.Location = New System.Drawing.Point(3, 3)
         Me.dgvMovimientos.Name = "dgvMovimientos"
         Me.dgvMovimientos.ReadOnly = True
-        Me.dgvMovimientos.Size = New System.Drawing.Size(1010, 309)
+        Me.dgvMovimientos.Size = New System.Drawing.Size(1010, 279)
         Me.dgvMovimientos.TabIndex = 0
         '
         'txtComentarios
@@ -1615,6 +1583,45 @@ Partial Class Activo_Fijo_Bien
         Me.lblComentarios.Size = New System.Drawing.Size(184, 16)
         Me.lblComentarios.TabIndex = 85
         Me.lblComentarios.Text = "Comentario del Movimiento"
+        '
+        'Buscar
+        '
+        Me.Buscar.HeaderText = "Buscar"
+        Me.Buscar.Name = "Buscar"
+        Me.Buscar.Text = "Buscar"
+        Me.Buscar.ToolTipText = "Buscar cuenta contable"
+        Me.Buscar.Width = 60
+        '
+        'CUENTA
+        '
+        Me.CUENTA.DataPropertyName = "CUENTA"
+        Me.CUENTA.HeaderText = "CUENTA"
+        Me.CUENTA.Name = "CUENTA"
+        '
+        'BIEN
+        '
+        Me.BIEN.DataPropertyName = "BIEN"
+        Me.BIEN.HeaderText = "BIEN"
+        Me.BIEN.Name = "BIEN"
+        '
+        'CUENTACONTABLE
+        '
+        Me.CUENTACONTABLE.DataPropertyName = "CUENTACONTABLE"
+        Me.CUENTACONTABLE.HeaderText = "Cuenta Contable"
+        Me.CUENTACONTABLE.Name = "CUENTACONTABLE"
+        Me.CUENTACONTABLE.Width = 300
+        '
+        'PORCENTAGE_ASIGNADO
+        '
+        Me.PORCENTAGE_ASIGNADO.DataPropertyName = "PORCENTAGE_ASIGNADO"
+        Me.PORCENTAGE_ASIGNADO.HeaderText = "Porcentaje"
+        Me.PORCENTAGE_ASIGNADO.Name = "PORCENTAGE_ASIGNADO"
+        '
+        'CUENTAREAL
+        '
+        Me.CUENTAREAL.DataPropertyName = "CUENTAREAL"
+        Me.CUENTAREAL.HeaderText = "CUENTAREAL"
+        Me.CUENTAREAL.Name = "CUENTAREAL"
         '
         'Activo_Fijo_Bien
         '
@@ -1798,12 +1805,13 @@ Partial Class Activo_Fijo_Bien
     Friend WithEvents GroupBox5 As System.Windows.Forms.GroupBox
     Friend WithEvents Label46 As System.Windows.Forms.Label
     Friend WithEvents dgvCuentasContables As System.Windows.Forms.DataGridView
+    Friend WithEvents txtComentarios As System.Windows.Forms.TextBox
+    Friend WithEvents lblComentarios As System.Windows.Forms.Label
+    Friend WithEvents Button1 As System.Windows.Forms.Button
     Friend WithEvents Buscar As System.Windows.Forms.DataGridViewButtonColumn
     Friend WithEvents CUENTA As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents BIEN As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents CUENTACONTABLE As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents PORCENTAGE_ASIGNADO As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents CUENTAREAL As System.Windows.Forms.DataGridViewTextBoxColumn
-    Friend WithEvents txtComentarios As System.Windows.Forms.TextBox
-    Friend WithEvents lblComentarios As System.Windows.Forms.Label
 End Class
