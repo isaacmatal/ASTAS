@@ -403,25 +403,25 @@ Public Class frmReportes_Ver
     End Sub
 
     Public Sub RepActivoFijoFichaActualizacion(ByVal Compañia, ByVal _id)
-        'Dim Rpt As New Contabilidad_Activo_Fijo_Ficha_DetalleMov
-        'Try
-        '    sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_REP_FICHA @BANDERA='ficha', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
-        '    Table = jClass.obtenerDatos(sqlCmd)
-        '    If Table.Rows.Count > 0 Then
-        '        Rpt.SetDataSource(Table)
+        Dim Rpt As New Contabilidad_Activo_Fijo_Ficha_Movimiento_Detalle
+        Try
+            sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_PROCESOS @BANDERA='rep_ficha_bie', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
+            Table = jClass.obtenerDatos(sqlCmd)
+            If Table.Rows.Count > 0 Then
+                Rpt.SetDataSource(Table)
 
-        '        Dim Table2 As New DataTable()
-        '        sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_REP_FICHA @BANDERA='cuentas', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
+                Dim Table2 As New DataTable()
+                sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_REP_FICHA2 @BANDERA='detalle', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
 
-        '        Table2 = jClass.obtenerDatos(sqlCmd)
-        '        Rpt.Subreports.Item(0).SetDataSource(Table2)
+                Table2 = jClass.obtenerDatos(sqlCmd)
+                Rpt.Subreports.Item(0).SetDataSource(Table2)
 
-        '        Me.crvReporte.ReportSource = Rpt
-        '    Else
-        '        MsgBox("No existen datos para mostrar", MsgBoxStyle.Exclamation, "AVISO")
-        '    End If
-        'Catch ex As Exception
-        '    MsgBox(ex.Message, MsgBoxStyle.Critical, "AVISO")
-        'End Try
+                Me.crvReporte.ReportSource = Rpt
+            Else
+                MsgBox("No existen datos para mostrar", MsgBoxStyle.Exclamation, "AVISO")
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, "AVISO")
+        End Try
     End Sub
 End Class
