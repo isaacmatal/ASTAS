@@ -352,6 +352,7 @@ Public Class frmReportes_Ver
         ElReporte.ReportDefinition.Sections("GroupFooterSection1").SectionFormat.EnableSuppress = chkNoDet.Checked
         Me.crvReporte.ReportSource = ElReporte
     End Sub
+
     Public Sub ReportesActivoFijo(ByVal _hasta, ByVal _tipo, ByVal _aplica, ByVal _totbaja, ByVal _codigos, ByVal _ubicacion)
         If _aplica = 3 Then
             _aplica = "NULL"
@@ -399,5 +400,28 @@ Public Class frmReportes_Ver
         Table = jClass.obtenerDatos(New SqlCommand(Sql))
         rpt.SetDataSource(Table)
         Me.crvReporte.ReportSource = rpt
+    End Sub
+
+    Public Sub RepActivoFijoFichaActualizacion(ByVal Compañia, ByVal _id)
+        'Dim Rpt As New Contabilidad_Activo_Fijo_Ficha_DetalleMov
+        'Try
+        '    sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_REP_FICHA @BANDERA='ficha', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
+        '    Table = jClass.obtenerDatos(sqlCmd)
+        '    If Table.Rows.Count > 0 Then
+        '        Rpt.SetDataSource(Table)
+
+        '        Dim Table2 As New DataTable()
+        '        sqlCmd.CommandText = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_REP_FICHA @BANDERA='cuentas', @COMPAÑIA=" & Compañia & ", @BIEN=" & _id
+
+        '        Table2 = jClass.obtenerDatos(sqlCmd)
+        '        Rpt.Subreports.Item(0).SetDataSource(Table2)
+
+        '        Me.crvReporte.ReportSource = Rpt
+        '    Else
+        '        MsgBox("No existen datos para mostrar", MsgBoxStyle.Exclamation, "AVISO")
+        '    End If
+        'Catch ex As Exception
+        '    MsgBox(ex.Message, MsgBoxStyle.Critical, "AVISO")
+        'End Try
     End Sub
 End Class
