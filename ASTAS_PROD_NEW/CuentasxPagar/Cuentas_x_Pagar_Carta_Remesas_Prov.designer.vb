@@ -137,7 +137,7 @@ Partial Class Cuentas_x_Pagar_Carta_Remesas_Prov
         '
         Me.btnReporte.Image = Global.ASTAS.My.Resources.Resources.exec
         Me.btnReporte.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
-        Me.btnReporte.Location = New System.Drawing.Point(396, 45)
+        Me.btnReporte.Location = New System.Drawing.Point(395, 45)
         Me.btnReporte.Name = "btnReporte"
         Me.btnReporte.Size = New System.Drawing.Size(79, 36)
         Me.btnReporte.TabIndex = 10

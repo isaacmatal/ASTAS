@@ -1,4 +1,3 @@
-Imports System.Data
 Imports System.Data.SqlClient
 
 Public Class Cuentas_x_Pagar_Carta_Remesas_Prov
