@@ -685,6 +685,12 @@
       <DependentUpon>Contabilidad_Activo_Fijo_Ficha_Movimiento_Bien.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reportes\Contabilidad_Activo_Fijo_Ficha_Movimiento_Detalle.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Contabilidad_Activo_Fijo_Ficha_Movimiento_Detalle.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reportes\Contabilidad_Activo_Fijo_Listado.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1416,6 +1422,10 @@
     <EmbeddedResource Include="Reportes\Contabilidad_Activo_Fijo_Ficha_Movimiento_Bien.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Contabilidad_Activo_Fijo_Ficha_Movimiento_Bien.vb</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reportes\Contabilidad_Activo_Fijo_Ficha_Movimiento_Detalle.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Contabilidad_Activo_Fijo_Ficha_Movimiento_Detalle.vb</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reportes\Contabilidad_Activo_Fijo_Listado.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
