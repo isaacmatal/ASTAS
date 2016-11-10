@@ -1273,22 +1273,22 @@ Public Class Activo_Fijo_Bien
     End Sub
 
     Private Sub dgvCuentasContables_CellLeave(ByVal sender As System.Object, ByVal e As System.Windows.Forms.DataGridViewCellEventArgs) Handles dgvCuentasContables.CellLeave
-        If dgvCuentasContables.Columns(e.ColumnIndex).Name = "CUENTACONTABLE" Then
-            If Not DBNull.Value.Equals(Me.dgvCuentasContables(3, e.RowIndex).Value) Then
-                Dim value_ As String = String.Empty
-                Dim _ok As Boolean = objEntidad.checkFor("SELECT CUENTA FROM dbo.CONTABILIDAD_CATALOGO_CUENTAS WHERE CUENTA_COMPLETA = '" & Me.dgvCuentasContables(3, e.RowIndex).Value & "' AND COMPAÑIA=" & Compañia, "CUENTA", value_)
-                If _ok Then
-                    dgvCuentasContables.Item(5, e.RowIndex).Value = value_
-                    'Colocando 0 en el porcentaje 
-                    If DBNull.Value.Equals(Me.dgvCuentasContables(4, e.RowIndex).Value) Then
-                        dgvCuentasContables.Item(2, e.RowIndex).Value = 0
-                    End If
-                Else
-                    MsgBox("Cuenta Contable No Valida..", MsgBoxStyle.Critical, "Error")
-                    Me.dgvCuentasContables.CurrentCell = dgvCuentasContables.Rows(e.RowIndex).Cells(3)
+        'If dgvCuentasContables.Columns(e.ColumnIndex).Name = "CUENTACONTABLE" Then
+        If Not DBNull.Value.Equals(Me.dgvCuentasContables(3, e.RowIndex).Value) Then
+            Dim value_ As String = String.Empty
+            Dim _ok As Boolean = objEntidad.checkFor("SELECT CUENTA FROM dbo.CONTABILIDAD_CATALOGO_CUENTAS WHERE CUENTA_COMPLETA = '" & Me.dgvCuentasContables(3, e.RowIndex).Value & "' AND COMPAÑIA=" & Compañia, "CUENTA", value_)
+            If _ok Then
+                dgvCuentasContables.Item(5, e.RowIndex).Value = value_
+                'Colocando 0 en el porcentaje 
+                If DBNull.Value.Equals(Me.dgvCuentasContables(4, e.RowIndex).Value) Then
+                    dgvCuentasContables.Item(2, e.RowIndex).Value = 0
                 End If
+                'Else
+                '    MsgBox("Cuenta Contable No Valida..", MsgBoxStyle.Critical, "Error")
+                '    Me.dgvCuentasContables.CurrentCell = dgvCuentasContables.Rows(e.RowIndex).Cells(3)
             End If
         End If
+        'End If
     End Sub
 
     Private Sub nudVidaUtilFinanciero_Leave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles nudVidaUtilFinanciero.Leave
@@ -1322,5 +1322,13 @@ Public Class Activo_Fijo_Bien
 
             Me.calcularAcumulado("financiero")
         End If
+    End Sub
+
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        Me.Button1.Visible = False
+        Dim _reportes As New frmReportes_Ver()
+        _reportes.RepActivoFijoFichaActualizacion(Compañia, Me.id_bien)
+        _reportes.ShowDialog()
+        Me.Button1.Visible = True
     End Sub
 End Class
