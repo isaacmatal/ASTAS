@@ -1,0 +1,16 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectView>ShowAllFiles</ProjectView>
+    <ReferencePath>C:\Program Files\Common Files\Business Objects\2.7\Managed\</ReferencePath>
+    <PublishUrlHistory>\\10.90.1.5\Servicios Web\Contabilidad\|\\10.90.1.5\Servicios Web Test\Contabilidad\|\\10.90.1.5\Servicios Web Test\ContaTest\|http://localhost/AstasConta/</PublishUrlHistory>
+    <InstallUrlHistory>http://10.90.1.5:4020/Contabilidad/</InstallUrlHistory>
+    <SupportUrlHistory>
+    </SupportUrlHistory>
+    <UpdateUrlHistory>\\10.90.1.5\Servicios Web\Contabilidad\|\\10.90.1.5\Servicios Web Test\Contabilidad\</UpdateUrlHistory>
+    <BootstrapperUrlHistory>
+    </BootstrapperUrlHistory>
+    <ApplicationRevision>27</ApplicationRevision>
+    <FallbackCulture>es-ES</FallbackCulture>
+    <VerifyUploadedFiles>true</VerifyUploadedFiles>
+  </PropertyGroup>
+</Project>
