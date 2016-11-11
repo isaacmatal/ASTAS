@@ -1225,6 +1225,9 @@ Public Class Activo_Fijo_Bien
             If nudVidaUtilFinanciero.Value = 120 Then
                 _tot_dias = 3650
             End If
+            If nudVidaUtilFinanciero.Value = 240 Then
+                _tot_dias = 7300
+            End If
 
             Me.nudDepreciaMensualFinanciero.Value = (IIf(Me.nudValorResidualFinanciero.Value > 0, Me.nudValorResidualFinanciero.Value, Me.nudPrecioOriginalFinanciero.Value) / Me.nudVidaUtilFinanciero.Value)
             Me.nudDepreciaMensualFiscal.Value = (IIf(Me.nudValorResidualFinanciero.Value > 0, Me.nudValorResidualFinanciero.Value, Me.nudPrecioOriginalFinanciero.Value) / Me.nudVidaUtilFinanciero.Value)
@@ -1264,6 +1267,9 @@ Public Class Activo_Fijo_Bien
             End If
             If nudVidaUtilFiscal.Value = 120 Then
                 _tot_dias = 3650
+            End If
+            If nudVidaUtilFiscal.Value = 240 Then
+                _tot_dias = 7300
             End If
 
             Me.nudDepreciaMensualFiscal.Value = (IIf(Me.nudValorResidualFiscal.Value > 0, Me.nudValorResidualFiscal.Value, Me.nudPrecioOriginalFiscal.Value) / Me.nudVidaUtilFiscal.Value)
@@ -1312,6 +1318,9 @@ Public Class Activo_Fijo_Bien
             End If
             If nudVidaUtilFinanciero.Value = 120 Then
                 _tot_dias = 3650
+            End If
+            If nudVidaUtilFinanciero.Value = 240 Then
+                _tot_dias = 7300
             End If
 
             Me.nudDepreciaMensualFinanciero.Value = (IIf(Me.nudValorResidualFinanciero.Value > 0, Me.nudValorResidualFinanciero.Value, Me.nudPrecioOriginalFinanciero.Value) / Me.nudVidaUtilFinanciero.Value)
