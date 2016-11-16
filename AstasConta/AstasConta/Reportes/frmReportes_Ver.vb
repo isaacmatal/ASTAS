@@ -386,9 +386,9 @@ Public Class frmReportes_Ver
         Me.crvReporte.ReportSource = rpt
     End Sub
 
-    Public Sub ReportesActivoFijoComparativos(ByVal _hasta, ByVal _codigos)
+    Public Sub ReportesActivoFijoComparativos(ByVal _hasta, ByVal _codigos, ByVal _clasifica, ByVal _resumido)
         Dim rpt As New Contabilidad_Activo_Fijo_Comparativo
-        Sql = "Exec dbo.SP_CONTABILIDAD_ACTIVO_FIJO_REPORTES_VARIOS @COMPAÑIA=" & Compañia & ", @FECHA_CONSULTA= '" & _hasta & "', @BANDERA=4, @TIPO_BIEN='" & _codigos & "'"
+        Sql = "Exec dbo.SP_CONTABILIDAD_ACTIVO_FIJO_REPORTES_VARIOS @COMPAÑIA=" & Compañia & ", @FECHA_CONSULTA= '" & _hasta & "', @BANDERA=4, @TIPO_BIEN='" & _codigos & "', @RESUMIDO=" & _resumido & ", @CLASIFICACION='" & _clasifica & "'"
         Table = jClass.obtenerDatos(New SqlCommand(Sql))
         rpt.SetDataSource(Table)
         Me.crvReporte.ReportSource = rpt
