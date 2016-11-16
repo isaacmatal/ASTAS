@@ -19,7 +19,6 @@ Public Class Activo_Fijo_Generar_Partidas
         Return New DateTime(year_, month_, DateTime.DaysInMonth(year_, month_))
     End Function
 
-
     Private Function procesarPartidas() As Boolean
         Dim Table As DataTable
         Conexion_ = New SqlConnection(CnnStrBldr.ConnectionString)
