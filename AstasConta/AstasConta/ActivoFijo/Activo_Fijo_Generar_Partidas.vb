@@ -164,27 +164,8 @@ Public Class Activo_Fijo_Generar_Partidas
         If Me.txtTransaccion.Text.Trim().Length > 0 Then
             Dim existe_ As Integer = Val(jClass.obtenerEscalar("SELECT COUNT(*) FROM CONTABILIDAD_PARTIDAS_DETALLE_EXTENDIDO WHERE TRANSACCION = " & Me.txtTransaccion.Text.Trim() & " AND COMPAÑIA = " & Compañia).ToString())
             If existe_ > 0 Then
-                If MsgBox("Las Partidas para esta fecha ya estan generadas desea generar de nuevo?", MsgBoxStyle.YesNo, "Confirmar") = MsgBoxResult.Yes Then
-                    Dim TableDel As DataTable
-                    Conexion_ = New SqlConnection(CnnStrBldr.ConnectionString)
-                    Try
-                        Conexion_.Open()
-                        Sql = "Execute SP_CONTABILIDAD_ACTIVO_FIJO_GENERAR_PARTIDA " & vbCrLf
-                        Sql &= " @COMPAÑIA = " & Compañia & vbCrLf
-                        Sql &= ",@TRASAC = " & Me.txtTransaccion.Text & vbCrLf
-                        Sql &= ",@BANDERA = 1"
-                        Comando_ = New SqlCommand(Sql, Conexion_)
-                        DataAdapter_ = New SqlDataAdapter(Comando_)
-                        TableDel = New DataTable("DELETEAF")
-                        DataAdapter_.Fill(TableDel)
-                        Conexion_.Close()
-                    Catch ex As Exception
-                        MsgBox(ex.Message, MsgBoxStyle.Critical, "Error")
-                    End Try
-                    Return True
-                Else
-                    Return False
-                End If
+                MsgBox("Las Partidas para esta fecha ya estan generadas.", MsgBoxStyle.Information, "Información")
+                Return False
             Else
                 Return True
             End If
