@@ -147,6 +147,7 @@ Public Class Activo_Fijo_Generar_Partidas
 
     Private Sub btnProcesarPartida_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnProcesarPartida.Click
         If MsgBox("Desea Generar las partidas contables de Activo Fijo. ¿Desea Continuar?", MsgBoxStyle.YesNo, "Confirmar") = MsgBoxResult.Yes Then
+            btnProcesarPartida.Visible = False
             If ValidaCierreContable(Year(Me.dpFECHA_CONTABLE.Value), Month(Me.dpFECHA_CONTABLE.Value), "E") Then
                 If Me.validarPartidas() Then
                     If procesarPartidas() Then
@@ -156,6 +157,7 @@ Public Class Activo_Fijo_Generar_Partidas
                     End If
                 End If
             End If
+            btnProcesarPartida.Visible = True
         End If
     End Sub
 

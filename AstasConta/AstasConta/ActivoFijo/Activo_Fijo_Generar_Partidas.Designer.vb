@@ -140,12 +140,15 @@ Partial Class Activo_Fijo_Generar_Partidas
         '
         'TabControl1
         '
+        Me.TabControl1.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+                    Or System.Windows.Forms.AnchorStyles.Left) _
+                    Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.TabControl1.Controls.Add(Me.tpTipos)
         Me.TabControl1.Controls.Add(Me.tpDetalle)
         Me.TabControl1.Location = New System.Drawing.Point(7, 87)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(899, 208)
+        Me.TabControl1.Size = New System.Drawing.Size(899, 402)
         Me.TabControl1.TabIndex = 56
         '
         'tpTipos
@@ -154,7 +157,7 @@ Partial Class Activo_Fijo_Generar_Partidas
         Me.tpTipos.Location = New System.Drawing.Point(4, 22)
         Me.tpTipos.Name = "tpTipos"
         Me.tpTipos.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpTipos.Size = New System.Drawing.Size(891, 182)
+        Me.tpTipos.Size = New System.Drawing.Size(891, 376)
         Me.tpTipos.TabIndex = 0
         Me.tpTipos.Text = "Por Tipo"
         Me.tpTipos.UseVisualStyleBackColor = True
@@ -168,7 +171,7 @@ Partial Class Activo_Fijo_Generar_Partidas
         Me.dgvTipos.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvTipos.Location = New System.Drawing.Point(3, 3)
         Me.dgvTipos.Name = "dgvTipos"
-        Me.dgvTipos.Size = New System.Drawing.Size(885, 176)
+        Me.dgvTipos.Size = New System.Drawing.Size(885, 370)
         Me.dgvTipos.TabIndex = 50
         '
         'tpDetalle
@@ -177,7 +180,7 @@ Partial Class Activo_Fijo_Generar_Partidas
         Me.tpDetalle.Location = New System.Drawing.Point(4, 22)
         Me.tpDetalle.Name = "tpDetalle"
         Me.tpDetalle.Padding = New System.Windows.Forms.Padding(3)
-        Me.tpDetalle.Size = New System.Drawing.Size(891, 382)
+        Me.tpDetalle.Size = New System.Drawing.Size(891, 182)
         Me.tpDetalle.TabIndex = 1
         Me.tpDetalle.Text = "Por Detalle"
         Me.tpDetalle.UseVisualStyleBackColor = True
@@ -190,7 +193,7 @@ Partial Class Activo_Fijo_Generar_Partidas
         Me.dgvDetalles.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvDetalles.Location = New System.Drawing.Point(3, 3)
         Me.dgvDetalles.Name = "dgvDetalles"
-        Me.dgvDetalles.Size = New System.Drawing.Size(885, 376)
+        Me.dgvDetalles.Size = New System.Drawing.Size(885, 176)
         Me.dgvDetalles.TabIndex = 49
         '
         'Activo_Fijo_Generar_Partidas

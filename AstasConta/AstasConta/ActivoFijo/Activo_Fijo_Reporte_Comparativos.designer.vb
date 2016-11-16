@@ -35,8 +35,8 @@ Partial Class Activo_Fijo_Reporte_Comparativos
         Me.dgvTipoBien = New System.Windows.Forms.DataGridView
         Me.Label4 = New System.Windows.Forms.Label
         Me.GroupBox1 = New System.Windows.Forms.GroupBox
+        Me.radTipoBien = New System.Windows.Forms.RadioButton
         Me.radCategoria = New System.Windows.Forms.RadioButton
-        Me.btnTipoBien = New System.Windows.Forms.RadioButton
         CType(Me.dgvClasificacion, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvTipoBien, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
@@ -187,7 +187,8 @@ Partial Class Activo_Fijo_Reporte_Comparativos
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.btnTipoBien)
+        Me.GroupBox1.BackColor = System.Drawing.Color.Transparent
+        Me.GroupBox1.Controls.Add(Me.radTipoBien)
         Me.GroupBox1.Controls.Add(Me.radCategoria)
         Me.GroupBox1.Location = New System.Drawing.Point(16, 5)
         Me.GroupBox1.Name = "GroupBox1"
@@ -196,27 +197,29 @@ Partial Class Activo_Fijo_Reporte_Comparativos
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Agrupación"
         '
+        'radTipoBien
+        '
+        Me.radTipoBien.AutoSize = True
+        Me.radTipoBien.BackColor = System.Drawing.Color.Transparent
+        Me.radTipoBien.Location = New System.Drawing.Point(130, 25)
+        Me.radTipoBien.Name = "radTipoBien"
+        Me.radTipoBien.Size = New System.Drawing.Size(85, 17)
+        Me.radTipoBien.TabIndex = 1
+        Me.radTipoBien.Text = "Tipo de Bien"
+        Me.radTipoBien.UseVisualStyleBackColor = False
+        '
         'radCategoria
         '
         Me.radCategoria.AutoSize = True
+        Me.radCategoria.BackColor = System.Drawing.Color.Transparent
+        Me.radCategoria.Checked = True
         Me.radCategoria.Location = New System.Drawing.Point(17, 25)
         Me.radCategoria.Name = "radCategoria"
-        Me.radCategoria.Size = New System.Drawing.Size(72, 17)
+        Me.radCategoria.Size = New System.Drawing.Size(84, 17)
         Me.radCategoria.TabIndex = 0
         Me.radCategoria.TabStop = True
-        Me.radCategoria.Text = "Categoría"
-        Me.radCategoria.UseVisualStyleBackColor = True
-        '
-        'btnTipoBien
-        '
-        Me.btnTipoBien.AutoSize = True
-        Me.btnTipoBien.Location = New System.Drawing.Point(130, 25)
-        Me.btnTipoBien.Name = "btnTipoBien"
-        Me.btnTipoBien.Size = New System.Drawing.Size(85, 17)
-        Me.btnTipoBien.TabIndex = 1
-        Me.btnTipoBien.TabStop = True
-        Me.btnTipoBien.Text = "Tipo de Bien"
-        Me.btnTipoBien.UseVisualStyleBackColor = True
+        Me.radCategoria.Text = "Clasificación"
+        Me.radCategoria.UseVisualStyleBackColor = False
         '
         'Activo_Fijo_Reporte_Comparativos
         '
@@ -254,6 +257,6 @@ Partial Class Activo_Fijo_Reporte_Comparativos
     Friend WithEvents dgvTipoBien As System.Windows.Forms.DataGridView
     Friend WithEvents Label4 As System.Windows.Forms.Label
     Friend WithEvents GroupBox1 As System.Windows.Forms.GroupBox
-    Friend WithEvents btnTipoBien As System.Windows.Forms.RadioButton
+    Friend WithEvents radTipoBien As System.Windows.Forms.RadioButton
     Friend WithEvents radCategoria As System.Windows.Forms.RadioButton
 End Class

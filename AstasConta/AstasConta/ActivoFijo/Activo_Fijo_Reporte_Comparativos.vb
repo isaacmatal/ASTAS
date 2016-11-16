@@ -122,7 +122,15 @@ Public Class Activo_Fijo_Reporte_Comparativos
     End Sub
 
     Private Sub btnPrint_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnPrint.Click
+        Dim _clasificacion As String = String.Empty
         Dim _tipos_bien As String = String.Empty
+
+        For i = 0 To Me.dgvClasificacion.Rows.Count - 1
+            If (Me.dgvClasificacion.Rows(i).Cells(2).Value) Then
+                _clasificacion &= CInt(Me.dgvClasificacion.Rows(i).Cells(0).Value).ToString() & ","
+            End If
+        Next
+        _clasificacion = _clasificacion.TrimEnd(",")
 
         For i = 0 To dgvTipoBien.Rows.Count - 1
             If (Me.dgvTipoBien.Rows(i).Cells(3).Value) Then
@@ -131,15 +139,25 @@ Public Class Activo_Fijo_Reporte_Comparativos
         Next
         _tipos_bien = _tipos_bien.TrimEnd(",")
 
-        If _tipos_bien.Length > 0 Then
-            Me.btnPrint.Visible = False
-            Dim _verreport As New frmReportes_Ver()
-            _verreport.ReportesActivoFijoComparativos(dtpHasta.Value.ToShortDateString(), _tipos_bien)
-            _verreport.ShowDialog()
-            Me.btnPrint.Visible = True
-        Else
-            MessageBox.Show("Seleccione los Tipos de Bienes a incluir en el Reporte", "SISTEMA", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        If Me.radCategoria.Checked Then
+            If Not _clasificacion.Length > 0 Then
+                MessageBox.Show("Seleccione las categorias a incluir en el Reporte", "SISTEMA", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return
+            End If
         End If
+        
+        If Me.radTipoBien.Checked Then
+            If Not _tipos_bien.Length > 0 Then
+                MessageBox.Show("Seleccione los Tipos de Bienes a incluir en el Reporte", "SISTEMA", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return
+            End If
+        End If
+
+        Me.btnPrint.Visible = False
+        Dim _verreport As New frmReportes_Ver()
+        _verreport.ReportesActivoFijoComparativos(dtpHasta.Value.ToShortDateString(), _tipos_bien, _clasificacion, IIf(Me.radCategoria.Checked, "1", "0"))
+        _verreport.ShowDialog()
+        Me.btnPrint.Visible = True
        
     End Sub
 End Class
