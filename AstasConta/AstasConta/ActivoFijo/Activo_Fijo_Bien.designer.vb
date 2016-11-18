@@ -1597,12 +1597,14 @@ Partial Class Activo_Fijo_Bien
         Me.CUENTA.DataPropertyName = "CUENTA"
         Me.CUENTA.HeaderText = "CUENTA"
         Me.CUENTA.Name = "CUENTA"
+        Me.CUENTA.Visible = False
         '
         'BIEN
         '
         Me.BIEN.DataPropertyName = "BIEN"
         Me.BIEN.HeaderText = "BIEN"
         Me.BIEN.Name = "BIEN"
+        Me.BIEN.Visible = False
         '
         'CUENTACONTABLE
         '
@@ -1622,6 +1624,7 @@ Partial Class Activo_Fijo_Bien
         Me.CUENTAREAL.DataPropertyName = "CUENTAREAL"
         Me.CUENTAREAL.HeaderText = "CUENTAREAL"
         Me.CUENTAREAL.Name = "CUENTAREAL"
+        Me.CUENTAREAL.Visible = False
         '
         'Activo_Fijo_Bien
         '
