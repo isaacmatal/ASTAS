@@ -40,7 +40,7 @@ Public Class Cooperaitiva_Reporte_Deudas_Agrupado_Anual
         Else
             Me.CrystalReportViewer1.DisplayGroupTree = False
         End If
-        rpt.SetDataSource(jClass.obtenerDatos(New SqlCommand("EXECUTE [dbo].[sp_COOPERATIVA_CARTERA_PRESTAMOS_GRUPO_ANUAL] @COMPAÑIA = " & Me.cmbAsociacion.SelectedValue & ", @YEAR = " & Now.Year & ", @TIPOSOLI = '" & tipos & "'")))
+        rpt.SetDataSource(jClass.obtenerDatos(New SqlCommand("EXECUTE [dbo].[sp_COOPERATIVA_CARTERA_PRESTAMOS_GRUPO_ANUAL] @COMPAÑIA = " & Me.cmbAsociacion.SelectedValue & ", @YEAR = " & Now.Year & ", @TIPOSOLI = '" & tipos & "', @FECHA ='" & Format(Me.dtpFechaRep.Value, "dd/MM/yyyy") & "'")))
         Me.CrystalReportViewer1.ReportSource = rpt
     End Sub
 
@@ -51,5 +51,11 @@ Public Class Cooperaitiva_Reporte_Deudas_Agrupado_Anual
                Drawing2D.LinearGradientMode.Vertical)
         Dim g As Graphics = e.Graphics
         g.FillRectangle(LinearBrush, 0, 0, Me.Width, Me.Height)
+    End Sub
+
+    Private Sub chkTodasSolicitudes_CheckedChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles chkTodasSolicitudes.CheckedChanged
+        For i As Integer = 0 To Me.dgvTipoSolicitud.Rows.Count - 1
+            Me.dgvTipoSolicitud.Rows(i).Cells(0).Value = Me.chkTodasSolicitudes.Checked
+        Next
     End Sub
 End Class
