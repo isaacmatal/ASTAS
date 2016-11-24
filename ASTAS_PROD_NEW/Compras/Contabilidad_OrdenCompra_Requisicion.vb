@@ -3,6 +3,7 @@ Imports System.Data.SqlClient
 Public Class Contabilidad_OrdenCompra_Requisicion
     Public codigo_ As Integer
     Public accion_ As String
+    Public _reabrir As Boolean = False
     Dim Rpts As New frmReportes_Ver
     Public puede_procesar_ As Boolean
     Public puede_autorizar_ As Boolean
@@ -95,6 +96,7 @@ Public Class Contabilidad_OrdenCompra_Requisicion
     End Sub
 
     Private Sub btnCerrar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCerrar.Click
+        _reabrir = False
         Me.Dispose()
     End Sub
 
@@ -160,8 +162,10 @@ Public Class Contabilidad_OrdenCompra_Requisicion
                         Me.borrarDocumento()
                     End If
             End Select
-
+            _reabrir = True
             setTitulo()
+            Me.Dispose()
+
         End If
     End Sub
 

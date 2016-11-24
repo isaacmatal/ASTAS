@@ -229,6 +229,7 @@ Public Class Contabilidad_OrdenCompra_Requisicion_browser
     End Sub
 
     Private Sub btnCerrar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCerrar.Click
+
         Me.Dispose()
     End Sub
 
@@ -242,9 +243,21 @@ Public Class Contabilidad_OrdenCompra_Requisicion_browser
         End If
     End Sub
 
-    Private Sub btnNuevo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnNuevo.Click
+    Private Function mostrarForms(ByVal _accion, ByVal _codigo) As Boolean
         Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
+        _requisicion.puede_procesar_ = Me._puede_procesar
+        _requisicion.puede_autorizar_ = Me._puede_autorizar
+        _requisicion.codigo_ = _codigo
+        _requisicion.accion_ = _accion
+        _requisicion.afectan_inventario = True
+        _requisicion.ShowDialog()
+
+        Return _requisicion._reabrir
+    End Function
+
+    Private Sub btnNuevo_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnNuevo.Click
         Me.Visible = False
+        Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
         _requisicion.puede_procesar_ = Me._puede_procesar
         _requisicion.puede_autorizar_ = Me._puede_autorizar
         _requisicion.codigo_ = 0
@@ -258,14 +271,10 @@ Public Class Contabilidad_OrdenCompra_Requisicion_browser
 
     Private Sub btnModificar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnModificar.Click        
         If Me._codigo > 0 Then
-            Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
             Me.Visible = False
-            _requisicion.puede_procesar_ = Me._puede_procesar
-            _requisicion.puede_autorizar_ = Me._puede_autorizar
-            _requisicion.codigo_ = Me._codigo
-            _requisicion.accion_ = "update"
-            _requisicion.afectan_inventario = True
-            _requisicion.ShowDialog()
+            While mostrarForms("update", Me._codigo)
+                mostrarForms("update", Me._codigo)
+            End While
             Me.Visible = True
             Me.cargarGrid()
             Me.paintByStatus()
@@ -277,11 +286,11 @@ Public Class Contabilidad_OrdenCompra_Requisicion_browser
     Private Sub btnEliminar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnEliminar.Click
         If Me._codigo > 0 Then
             If Me._status.Equals("PENDIENTE") Then
-                Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
                 Me.Visible = False
+                Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
                 _requisicion.puede_procesar_ = Me._puede_procesar
                 _requisicion.puede_autorizar_ = Me._puede_autorizar
-                _requisicion.codigo_ = Me._codigo
+                _requisicion.codigo_ = 0
                 _requisicion.accion_ = "delete"
                 _requisicion.afectan_inventario = True
                 _requisicion.ShowDialog()
@@ -298,11 +307,11 @@ Public Class Contabilidad_OrdenCompra_Requisicion_browser
 
     Private Sub btnConsultar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnConsultar.Click
         If Me._codigo > 0 Then
-            Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
             Me.Visible = False
+            Dim _requisicion As New Contabilidad_OrdenCompra_Requisicion()
             _requisicion.puede_procesar_ = Me._puede_procesar
             _requisicion.puede_autorizar_ = Me._puede_autorizar
-            _requisicion.codigo_ = Me._codigo
+            _requisicion.codigo_ = 0
             _requisicion.accion_ = "select"
             _requisicion.afectan_inventario = True
             _requisicion.ShowDialog()
