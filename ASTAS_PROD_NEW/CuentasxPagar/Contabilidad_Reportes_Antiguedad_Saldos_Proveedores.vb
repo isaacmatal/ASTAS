@@ -1,4 +1,3 @@
-Imports System.Data.OleDb
 Imports System.Data.SqlClient
 
 Public Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
