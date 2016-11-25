@@ -9,7 +9,7 @@
     <UpdateUrlHistory>\\10.90.1.5\Servicios Web\Contabilidad\|\\10.90.1.5\Servicios Web Test\Contabilidad\</UpdateUrlHistory>
     <BootstrapperUrlHistory>
     </BootstrapperUrlHistory>
-    <ApplicationRevision>27</ApplicationRevision>
+    <ApplicationRevision>28</ApplicationRevision>
     <FallbackCulture>es-ES</FallbackCulture>
     <VerifyUploadedFiles>true</VerifyUploadedFiles>
   </PropertyGroup>
