@@ -20,30 +20,30 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Me.txtFechaI = New System.Windows.Forms.DateTimePicker
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Me.dtpFecha = New System.Windows.Forms.DateTimePicker
         Me.Label3 = New System.Windows.Forms.Label
         Me.BtnBuscar = New System.Windows.Forms.Button
         Me.dgvProveedores = New System.Windows.Forms.DataGridView
-        Me.crvReporte = New CrystalDecisions.Windows.Forms.CrystalReportViewer
-        Me.chkProv = New System.Windows.Forms.CheckBox
         Me.selec = New System.Windows.Forms.DataGridViewCheckBoxColumn
         Me.codprov = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.nombprov = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.crvReporte = New CrystalDecisions.Windows.Forms.CrystalReportViewer
+        Me.chkProv = New System.Windows.Forms.CheckBox
         Me.txtCodigo = New System.Windows.Forms.TextBox
         Me.txtProvedor = New System.Windows.Forms.TextBox
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         CType(Me.dgvProveedores, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'txtFechaI
+        'dtpFecha
         '
-        Me.txtFechaI.Location = New System.Drawing.Point(114, 17)
-        Me.txtFechaI.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
-        Me.txtFechaI.Name = "txtFechaI"
-        Me.txtFechaI.Size = New System.Drawing.Size(220, 22)
-        Me.txtFechaI.TabIndex = 2
+        Me.dtpFecha.Location = New System.Drawing.Point(114, 17)
+        Me.dtpFecha.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
+        Me.dtpFecha.Name = "dtpFecha"
+        Me.dtpFecha.Size = New System.Drawing.Size(220, 22)
+        Me.dtpFecha.TabIndex = 2
         '
         'Label3
         '
@@ -76,22 +76,22 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
         '
         Me.dgvProveedores.AllowUserToAddRows = False
         Me.dgvProveedores.AllowUserToDeleteRows = False
-        DataGridViewCellStyle7.BackColor = System.Drawing.Color.PaleTurquoise
-        Me.dgvProveedores.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.PaleTurquoise
+        Me.dgvProveedores.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvProveedores.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.dgvProveedores.BackgroundColor = System.Drawing.Color.MintCream
         Me.dgvProveedores.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.dgvProveedores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvProveedores.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.selec, Me.codprov, Me.nombprov})
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.Teal
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Yellow
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvProveedores.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.Teal
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.Yellow
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvProveedores.DefaultCellStyle = DataGridViewCellStyle2
         Me.dgvProveedores.Location = New System.Drawing.Point(12, 78)
         Me.dgvProveedores.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.dgvProveedores.Name = "dgvProveedores"
@@ -99,6 +99,30 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
         Me.dgvProveedores.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvProveedores.Size = New System.Drawing.Size(308, 472)
         Me.dgvProveedores.TabIndex = 146
+        '
+        'selec
+        '
+        Me.selec.HeaderText = "*"
+        Me.selec.Name = "selec"
+        Me.selec.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.selec.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.selec.Width = 25
+        '
+        'codprov
+        '
+        Me.codprov.DataPropertyName = "PROVEEDOR"
+        Me.codprov.HeaderText = "Cod."
+        Me.codprov.Name = "codprov"
+        Me.codprov.ReadOnly = True
+        Me.codprov.Width = 35
+        '
+        'nombprov
+        '
+        Me.nombprov.DataPropertyName = "NOMBRE_PROVEEDOR"
+        Me.nombprov.HeaderText = "Proveedor"
+        Me.nombprov.Name = "nombprov"
+        Me.nombprov.ReadOnly = True
+        Me.nombprov.Width = 225
         '
         'crvReporte
         '
@@ -126,30 +150,6 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
         Me.chkProv.TabIndex = 148
         Me.chkProv.Text = "Todos los Proveedores"
         Me.chkProv.UseVisualStyleBackColor = False
-        '
-        'selec
-        '
-        Me.selec.HeaderText = "*"
-        Me.selec.Name = "selec"
-        Me.selec.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.selec.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.selec.Width = 25
-        '
-        'codprov
-        '
-        Me.codprov.DataPropertyName = "PROVEEDOR"
-        Me.codprov.HeaderText = "Cod."
-        Me.codprov.Name = "codprov"
-        Me.codprov.ReadOnly = True
-        Me.codprov.Width = 35
-        '
-        'nombprov
-        '
-        Me.nombprov.DataPropertyName = "NOMBRE_PROVEEDOR"
-        Me.nombprov.HeaderText = "Proveedor"
-        Me.nombprov.Name = "nombprov"
-        Me.nombprov.ReadOnly = True
-        Me.nombprov.Width = 225
         '
         'txtCodigo
         '
@@ -179,7 +179,7 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
         Me.Controls.Add(Me.chkProv)
         Me.Controls.Add(Me.crvReporte)
         Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.txtFechaI)
+        Me.Controls.Add(Me.dtpFecha)
         Me.Controls.Add(Me.dgvProveedores)
         Me.Controls.Add(Me.BtnBuscar)
         Me.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -193,7 +193,7 @@ Partial Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents txtFechaI As System.Windows.Forms.DateTimePicker
+    Friend WithEvents dtpFecha As System.Windows.Forms.DateTimePicker
     Friend WithEvents Label3 As System.Windows.Forms.Label
     Friend WithEvents BtnBuscar As System.Windows.Forms.Button
     Friend WithEvents dgvProveedores As System.Windows.Forms.DataGridView

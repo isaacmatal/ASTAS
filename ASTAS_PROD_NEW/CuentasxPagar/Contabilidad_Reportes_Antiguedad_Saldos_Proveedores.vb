@@ -33,8 +33,12 @@ Public Class Contabilidad_Reportes_Antiguedad_Saldos_Proveedores
             End If
             Sql = "EXECUTE sp_CONTABILIDAD_REPORTES_ANTIGUEDAD_SALDOS_PROVEEDORES_RPT " & vbCrLf
             Sql &= "@COMPAÑIA = " & Compañia & vbCrLf
-            Sql &= ", @FECHA = '" & Format(Me.txtFechaI.Value, "dd/MM/yyyy") & "'" & vbCrLf
-            Sql &= ", @BANDERA = 1" & vbCrLf
+            Sql &= ", @FECHA = '" & Format(Me.dtpFecha.Value, "dd/MM/yyyy") & "'" & vbCrLf
+            If Me.dtpFecha.Value.Month = Now.Month Then
+                Sql &= ", @BANDERA = 2" & vbCrLf
+            Else
+                Sql &= ", @BANDERA = 1" & vbCrLf
+            End If
             Sql &= ", @PROVEEDOR = '" & Proveedor & "'" & vbCrLf
             sqlCmd.CommandText = Sql
             Table = jClass.obtenerDatos(sqlCmd)
