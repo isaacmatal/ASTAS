@@ -32,16 +32,17 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
         Me.btnGenerar = New System.Windows.Forms.Button
         Me.crvEstadoCuenta = New CrystalDecisions.Windows.Forms.CrystalReportViewer
         Me.dgvProveedores = New System.Windows.Forms.DataGridView
+        Me.selec = New System.Windows.Forms.DataGridViewCheckBoxColumn
+        Me.codprov = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.nombprov = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.pb1 = New System.Windows.Forms.ProgressBar
         Me.BW1 = New System.ComponentModel.BackgroundWorker
-        Me.selec = New System.Windows.Forms.DataGridViewCheckBoxColumn
-        Me.codprov = New System.Windows.Forms.DataGridViewTextBoxColumn
-        Me.nombprov = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.txtCodigo = New System.Windows.Forms.TextBox
         Me.txtProvedor = New System.Windows.Forms.TextBox
+        Me.btnCancelar = New System.Windows.Forms.Button
         CType(Me.pbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvProveedores, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -84,7 +85,7 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
         Me.chkProv.Location = New System.Drawing.Point(315, 60)
         Me.chkProv.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkProv.Name = "chkProv"
-        Me.chkProv.Size = New System.Drawing.Size(159, 20)
+        Me.chkProv.Size = New System.Drawing.Size(148, 20)
         Me.chkProv.TabIndex = 124
         Me.chkProv.Text = "Todos los Proveedores"
         Me.chkProv.UseVisualStyleBackColor = True
@@ -184,6 +185,30 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
         Me.dgvProveedores.Size = New System.Drawing.Size(299, 356)
         Me.dgvProveedores.TabIndex = 145
         '
+        'selec
+        '
+        Me.selec.HeaderText = "*"
+        Me.selec.Name = "selec"
+        Me.selec.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.selec.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.selec.Width = 20
+        '
+        'codprov
+        '
+        Me.codprov.DataPropertyName = "PROVEEDOR"
+        Me.codprov.HeaderText = "Cod."
+        Me.codprov.Name = "codprov"
+        Me.codprov.ReadOnly = True
+        Me.codprov.Width = 35
+        '
+        'nombprov
+        '
+        Me.nombprov.DataPropertyName = "NOMBRE_PROVEEDOR"
+        Me.nombprov.HeaderText = "Proveedor"
+        Me.nombprov.Name = "nombprov"
+        Me.nombprov.ReadOnly = True
+        Me.nombprov.Width = 220
+        '
         'DataGridViewTextBoxColumn1
         '
         Me.DataGridViewTextBoxColumn1.DataPropertyName = "NOMBRE_PROVEEDOR"
@@ -215,30 +240,6 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
         Me.BW1.WorkerReportsProgress = True
         Me.BW1.WorkerSupportsCancellation = True
         '
-        'selec
-        '
-        Me.selec.HeaderText = "*"
-        Me.selec.Name = "selec"
-        Me.selec.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.selec.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.selec.Width = 20
-        '
-        'codprov
-        '
-        Me.codprov.DataPropertyName = "PROVEEDOR"
-        Me.codprov.HeaderText = "Cod."
-        Me.codprov.Name = "codprov"
-        Me.codprov.ReadOnly = True
-        Me.codprov.Width = 35
-        '
-        'nombprov
-        '
-        Me.nombprov.DataPropertyName = "NOMBRE_PROVEEDOR"
-        Me.nombprov.HeaderText = "Proveedor"
-        Me.nombprov.Name = "nombprov"
-        Me.nombprov.ReadOnly = True
-        Me.nombprov.Width = 220
-        '
         'txtCodigo
         '
         Me.txtCodigo.Location = New System.Drawing.Point(8, 113)
@@ -257,11 +258,29 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
         Me.txtProvedor.Tag = "NOMBRE_PROVEEDOR"
         Me.ToolTip1.SetToolTip(Me.txtProvedor, "Búsqueda por Nombre")
         '
+        'btnCancelar
+        '
+        Me.btnCancelar.BackgroundImage = Global.ASTAS.My.Resources.Resources.nota
+        Me.btnCancelar.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCancelar.Image = Global.ASTAS.My.Resources.Resources.button_cancel
+        Me.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.btnCancelar.Location = New System.Drawing.Point(698, 66)
+        Me.btnCancelar.Margin = New System.Windows.Forms.Padding(2, 5, 2, 5)
+        Me.btnCancelar.Name = "btnCancelar"
+        Me.btnCancelar.Size = New System.Drawing.Size(94, 27)
+        Me.btnCancelar.TabIndex = 125
+        Me.btnCancelar.Text = "CANCELAR"
+        Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnCancelar.UseVisualStyleBackColor = True
+        Me.btnCancelar.Visible = False
+        '
         'CxP_Reportes_Integracion_Saldos_Prov
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(856, 505)
+        Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.txtProvedor)
         Me.Controls.Add(Me.pb1)
@@ -302,4 +321,5 @@ Partial Class CxP_Reportes_Integracion_Saldos_Prov
     Friend WithEvents ToolTip1 As System.Windows.Forms.ToolTip
     Friend WithEvents txtCodigo As System.Windows.Forms.TextBox
     Friend WithEvents txtProvedor As System.Windows.Forms.TextBox
+    Friend WithEvents btnCancelar As System.Windows.Forms.Button
 End Class

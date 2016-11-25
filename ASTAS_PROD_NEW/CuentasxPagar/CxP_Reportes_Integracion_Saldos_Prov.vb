@@ -43,16 +43,21 @@ Public Class CxP_Reportes_Integracion_Saldos_Prov
         TextObj.Text = Descripcion_Compañia
         TextObj = rpt.Section2.ReportObjects.Item("txtPeriodo")
         TextObj.Text = "INTEGRACION DE SALDO " & jClass.obtenerEscalar("SELECT dbo.fn_INVENTARIOS_PERIODO_SEGUN_FECHA ('" & Format(Me.dpFechaI.Value, "dd-MM-yyyy") & "', '" & Format(Me.dpFechaF.Value, "dd-MM-yyyy") & "')")
+        Me.btnCancelar.Visible = True
         BW1.RunWorkerAsync()
     End Sub
 
-    Private Function auxiliarProv(ByVal query As String) As DataTable
+    Private Function auxiliarProv(ByVal query As String, ByRef e As System.ComponentModel.DoWorkEventArgs) As DataTable
         Dim tblTemporal As DataTable
         Dim tblDatos As DataTable = jClass.obtenerDatos(New SqlCommand(query & "999999999"))
         While tblDatos.Rows.Count > 0
             tblDatos.Rows.RemoveAt(0)
         End While
         For i As Integer = 0 To Me.dgvProveedores.Rows.Count - 1
+            If BW1.CancellationPending Then
+                e.Cancel = True
+                Exit For
+            End If
             If Me.dgvProveedores.Rows(i).Cells(0).Value Then
                 tblTemporal = jClass.obtenerDatos(New SqlCommand(query & Me.dgvProveedores.Rows(i).Cells(1).Value))
                 For Each row As DataRow In tblTemporal.Rows
@@ -65,7 +70,7 @@ Public Class CxP_Reportes_Integracion_Saldos_Prov
     End Function
 
     Private Sub BW1_DoWork(ByVal sender As System.Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BW1.DoWork
-        Table = auxiliarProv(Sql)
+        Table = auxiliarProv(Sql, e)
     End Sub
 
     Private Sub BW1_ProgressChanged(ByVal sender As Object, ByVal e As System.ComponentModel.ProgressChangedEventArgs) Handles BW1.ProgressChanged
@@ -73,6 +78,11 @@ Public Class CxP_Reportes_Integracion_Saldos_Prov
     End Sub
 
     Private Sub BW1_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BW1.RunWorkerCompleted
+        If e.Cancelled Then
+            'Se muestra si fue cancelado manualmente
+            MsgBox("Usuario ha interrumpido el proceso" & vbCrLf & vbCrLf & "Los datos mostrados no son completos.")
+        End If
+        Me.btnCancelar.Visible = False
         pb1.Visible = False
         rpt.SetDataSource(Table)
         Me.crvEstadoCuenta.ReportSource = rpt
@@ -108,5 +118,9 @@ Public Class CxP_Reportes_Integracion_Saldos_Prov
             Me.dgvProveedores.DataSource = Nothing
             Me.dgvProveedores.DataSource = tablaT
         End If
+    End Sub
+
+    Private Sub btnCancelar_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnCancelar.Click
+        BW1.CancelAsync()
     End Sub
 End Class

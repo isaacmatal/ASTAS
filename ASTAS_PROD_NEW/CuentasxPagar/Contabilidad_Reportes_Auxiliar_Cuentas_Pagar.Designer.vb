@@ -20,11 +20,11 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle21 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle23 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle22 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle24 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
+        Dim DataGridViewCellStyle25 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle
         Me.pbImagen = New System.Windows.Forms.PictureBox
         Me.GroupBox1 = New System.Windows.Forms.GroupBox
         Me.chkProv = New System.Windows.Forms.CheckBox
@@ -45,6 +45,7 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
         Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn
         Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn
+        Me.btnCancelar = New System.Windows.Forms.Button
         CType(Me.pbImagen, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvProveedores, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -87,7 +88,7 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         Me.chkProv.Location = New System.Drawing.Point(315, 60)
         Me.chkProv.Margin = New System.Windows.Forms.Padding(3, 4, 3, 4)
         Me.chkProv.Name = "chkProv"
-        Me.chkProv.Size = New System.Drawing.Size(159, 20)
+        Me.chkProv.Size = New System.Drawing.Size(148, 20)
         Me.chkProv.TabIndex = 124
         Me.chkProv.Text = "Todos los Proveedores"
         Me.chkProv.UseVisualStyleBackColor = True
@@ -164,22 +165,22 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         '
         Me.dgvProveedores.AllowUserToAddRows = False
         Me.dgvProveedores.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.PaleTurquoise
-        Me.dgvProveedores.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle21.BackColor = System.Drawing.Color.PaleTurquoise
+        Me.dgvProveedores.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle21
         Me.dgvProveedores.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
                     Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.dgvProveedores.BackgroundColor = System.Drawing.Color.MintCream
         Me.dgvProveedores.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.dgvProveedores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvProveedores.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.selec, Me.codprov, Me.nombprov})
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.Teal
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Yellow
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvProveedores.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle23.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle23.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle23.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle23.SelectionBackColor = System.Drawing.Color.Teal
+        DataGridViewCellStyle23.SelectionForeColor = System.Drawing.Color.Yellow
+        DataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvProveedores.DefaultCellStyle = DataGridViewCellStyle23
         Me.dgvProveedores.Location = New System.Drawing.Point(8, 141)
         Me.dgvProveedores.Name = "dgvProveedores"
         Me.dgvProveedores.RowHeadersVisible = False
@@ -198,8 +199,8 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         'codprov
         '
         Me.codprov.DataPropertyName = "PROVEEDOR"
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.codprov.DefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.codprov.DefaultCellStyle = DataGridViewCellStyle22
         Me.codprov.HeaderText = "Cod."
         Me.codprov.Name = "codprov"
         Me.codprov.ReadOnly = True
@@ -249,8 +250,8 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         'DataGridViewTextBoxColumn1
         '
         Me.DataGridViewTextBoxColumn1.DataPropertyName = "NOMBRE_PROVEEDOR"
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.DataGridViewTextBoxColumn1.DefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.DataGridViewTextBoxColumn1.DefaultCellStyle = DataGridViewCellStyle24
         Me.DataGridViewTextBoxColumn1.HeaderText = "Proveedor"
         Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
         Me.DataGridViewTextBoxColumn1.ReadOnly = True
@@ -259,19 +260,37 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         'DataGridViewTextBoxColumn2
         '
         Me.DataGridViewTextBoxColumn2.DataPropertyName = "PROVEEDOR"
-        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-        Me.DataGridViewTextBoxColumn2.DefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle25.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+        Me.DataGridViewTextBoxColumn2.DefaultCellStyle = DataGridViewCellStyle25
         Me.DataGridViewTextBoxColumn2.HeaderText = "Codigo"
         Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
         Me.DataGridViewTextBoxColumn2.ReadOnly = True
         Me.DataGridViewTextBoxColumn2.Visible = False
         Me.DataGridViewTextBoxColumn2.Width = 40
         '
+        'btnCancelar
+        '
+        Me.btnCancelar.BackgroundImage = Global.ASTAS.My.Resources.Resources.nota
+        Me.btnCancelar.Font = New System.Drawing.Font("Arial Narrow", 9.75!, System.Drawing.FontStyle.Bold)
+        Me.btnCancelar.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.btnCancelar.Image = Global.ASTAS.My.Resources.Resources.button_cancel
+        Me.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.btnCancelar.Location = New System.Drawing.Point(698, 66)
+        Me.btnCancelar.Margin = New System.Windows.Forms.Padding(2, 5, 2, 5)
+        Me.btnCancelar.Name = "btnCancelar"
+        Me.btnCancelar.Size = New System.Drawing.Size(94, 27)
+        Me.btnCancelar.TabIndex = 149
+        Me.btnCancelar.Text = "CANCELAR"
+        Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnCancelar.UseVisualStyleBackColor = True
+        Me.btnCancelar.Visible = False
+        '
         'Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(856, 505)
+        Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.txtCodigo)
         Me.Controls.Add(Me.txtProvedor)
         Me.Controls.Add(Me.pb1)
@@ -312,4 +331,5 @@ Partial Class Contabilidad_Reportes_Auxiliar_Cuentas_Pagar
     Friend WithEvents selec As System.Windows.Forms.DataGridViewCheckBoxColumn
     Friend WithEvents codprov As System.Windows.Forms.DataGridViewTextBoxColumn
     Friend WithEvents nombprov As System.Windows.Forms.DataGridViewTextBoxColumn
+    Friend WithEvents btnCancelar As System.Windows.Forms.Button
 End Class
