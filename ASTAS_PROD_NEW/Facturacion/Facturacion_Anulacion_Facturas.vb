@@ -73,8 +73,8 @@ Public Class Facturacion_Anulacion_Facturas
     End Sub
 
     Private Sub btnAnular_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnAnular.Click
-        Dim numFactura, NumOV, RowsAfected As Double
-        Dim numSoli, CodBuxis As Integer
+        Dim AhorroExt As Double
+        Dim numSoli, CodBuxis, RowsAfected, numFactura, NumOV As Integer
         Dim detalleInv, tblAnular As DataTable
         Dim anula As Boolean
         Try
@@ -85,29 +85,29 @@ Public Class Facturacion_Anulacion_Facturas
                 anula = row.Cells("Anular").Value
                 CodBuxis = row.Cells("CODIGO_EMPLEADO").Value
                 If anula Then
-                    Sql = "EXECUTE [dbo].[sp_FACTURACION_ANULA_FACTURA_GENERADA]"
-                    Sql &= "  @COMPAÑIA = " & Compañia
-                    Sql &= ", @BODEGA =  " & Me.cmbBODEGA.SelectedValue
-                    Sql &= ", @ORDEN_VENTA = " & NumOV
-                    Sql &= ", @TIPO_DOCUMENTO = " & Me.cmbTipDoc.SelectedValue
-                    Sql &= ", @NUMERO_FACTURA = " & numFactura
-                    Sql &= ", @USUARIO = " & Usuario
-                    Sql &= ", @IUD = A"
+                    Sql = "EXECUTE [dbo].[sp_FACTURACION_ANULA_FACTURA_GENERADA]" & vbCrLf
+                    Sql &= "  @COMPAÑIA = " & Compañia & vbCrLf
+                    Sql &= ", @BODEGA =  " & Me.cmbBODEGA.SelectedValue & vbCrLf
+                    Sql &= ", @ORDEN_VENTA = " & NumOV & vbCrLf
+                    Sql &= ", @TIPO_DOCUMENTO = " & Me.cmbTipDoc.SelectedValue & vbCrLf
+                    Sql &= ", @NUMERO_FACTURA = " & numFactura & vbCrLf
+                    Sql &= ", @USUARIO = " & Usuario & vbCrLf
+                    Sql &= ", @IUD = A" & vbCrLf
                     sqlCmd.CommandText = Sql
                     RowsAfected = jClass.ejecutarComandoSql(sqlCmd)
                     Sql = "SELECT FGD.PRODUCTO, ICP.DESCRIPCION_PRODUCTO, RTRIM(ICUM.DESCRIPCION_UNIDAD_MEDIDA) AS DESCRIPCION_UNIDAD_MEDIDA, FGD.CANTIDAD, FGD.PRECIO_UNITARIO, FGD.PRECIO_TOTAL, FGD.BODEGA, FGD.ORDEN_VENTA, FGD.TIPO_DOCUMENTO, FGE.NUMERO_FACTURA, FGE.ANULADA, FGD.LINEA, IME.TIPO_MOVIMIENTO, IME.MOVIMIENTO, FGE.CODIGO_EMPLEADO, FGE.CODIGO_EMPLEADO_AS, FGE.FORMA_PAGO, FGE.IMPRIMIR_CONCEPTO, FGE.CONCEPTO, FGE.FECHA_FACTURA, FGE.FACTURA_IMPRESA FROM dbo.FACTURACION_GENERADA_ENCABEZADO FGE, dbo.FACTURACION_GENERADA_DETALLE FGD,dbo.INVENTARIOS_MOVIMIENTOS_ENCABEZADO IME, dbo.INVENTARIOS_MOVIMIENTOS_DETALLE IMD, dbo.INVENTARIOS_CATALOGO_PRODUCTOS ICP, dbo.INVENTARIOS_CATALOGO_UNIDAD_MEDIDA ICUM WHERE FGE.BODEGA = FGD.BODEGA AND FGE.COMPAÑIA = FGD.COMPAÑIA AND FGE.TIPO_DOCUMENTO = FGD.TIPO_DOCUMENTO AND FGE.NUMERO_FACTURA = FGD.NUMERO_FACTURA AND FGE.ORDEN_VENTA = IME.ORDEN_VENTA AND IME.COMPAÑIA = IMD.COMPAÑIA AND IME.BODEGA = IMD.BODEGA AND IME.TIPO_MOVIMIENTO = IMD.TIPO_MOVIMIENTO AND IME.MOVIMIENTO = IMD.MOVIMIENTO AND FGD.PRODUCTO = IMD.PRODUCTO AND FGD.COMPAÑIA = ICP.COMPAÑIA AND FGD.PRODUCTO = ICP.PRODUCTO AND ICUM.COMPAÑIA = FGD.COMPAÑIA AND ICUM.UNIDAD_MEDIDA = FGD.UNIDAD_MEDIDA AND IMD.ENTRADA_SALIDA = 0"
-                    Sql &= " AND FGE.COMPAÑIA = " & Compañia
-                    Sql &= " AND FGE.BODEGA = " & Me.cmbBODEGA.SelectedValue
-                    Sql &= " AND FGE.TIPO_DOCUMENTO = " & Me.cmbTipDoc.SelectedValue
-                    Sql &= " AND FGE.NUMERO_FACTURA = " & numFactura
-                    Sql &= " ORDER BY FGD.LINEA"
+                    Sql &= " AND FGE.COMPAÑIA = " & Compañia & vbCrLf
+                    Sql &= " AND FGE.BODEGA = " & Me.cmbBODEGA.SelectedValue & vbCrLf
+                    Sql &= " AND FGE.TIPO_DOCUMENTO = " & Me.cmbTipDoc.SelectedValue & vbCrLf
+                    Sql &= " AND FGE.NUMERO_FACTURA = " & numFactura & vbCrLf
+                    Sql &= " ORDER BY FGD.LINEA" & vbCrLf
                     sqlCmd.CommandText = Sql
                     detalleInv = jClass.obtenerDatos(sqlCmd)
                     For Each TableRow As DataRow In detalleInv.Rows
-                        Sql = "UPDATE INVENTARIOS_MOVIMIENTOS_DETALLE"
-                        Sql &= " SET ANULADO = 1"
-                        Sql &= " WHERE COMPAÑIA = " & Compañia & " AND TIPO_MOVIMIENTO = " & TableRow.Item("TIPO_MOVIMIENTO")
-                        Sql &= " AND MOVIMIENTO = " & TableRow.Item("MOVIMIENTO") & " AND PRODUCTO = " & TableRow.Item("PRODUCTO")
+                        Sql = "UPDATE INVENTARIOS_MOVIMIENTOS_DETALLE" & vbCrLf
+                        Sql &= " SET ANULADO = 1" & vbCrLf
+                        Sql &= " WHERE COMPAÑIA = " & Compañia & " AND TIPO_MOVIMIENTO = " & TableRow.Item("TIPO_MOVIMIENTO") & vbCrLf
+                        Sql &= " AND MOVIMIENTO = " & TableRow.Item("MOVIMIENTO") & " AND PRODUCTO = " & TableRow.Item("PRODUCTO") & vbCrLf
                         sqlCmd.CommandText = Sql
                         RowsAfected = jClass.ejecutarComandoSql(sqlCmd)
                     Next
@@ -115,33 +115,46 @@ Public Class Facturacion_Anulacion_Facturas
                     tblAnular = jClass.obtenerDatos(New SqlCommand(Sql))
                     For i As Integer = 0 To tblAnular.Rows.Count - 1
                         numSoli = tblAnular.Rows(i).Item(0)
-                        Sql = "UPDATE COOPERATIVA_SOLICITUDES_AUTORIZACION"
-                        Sql &= " SET ANULADA = 1"
-                        Sql &= ", COMENTARIO_ANULADA = 'ANULACION FACTURA'"
-                        Sql &= ", FECHA_ANULADA = GETDATE()"
-                        Sql &= ", USUARIO_ANULO = '" & Usuario & "'"
-                        Sql &= ", USUARIO_EDICION_FECHA = GETDATE()"
-                        Sql &= " WHERE COMPAÑIA = " & Compañia & " AND TIPO_FACTURA = " & Me.cmbTipDoc.SelectedValue & " AND NUMERO_FACTURA = " & numFactura & " AND CODIGO_BUXIS = " & CodBuxis
+                        Sql = "UPDATE COOPERATIVA_SOLICITUDES_AUTORIZACION" & vbCrLf
+                        Sql &= " SET ANULADA = 1" & vbCrLf
+                        Sql &= ", COMENTARIO_ANULADA = 'ANULACION FACTURA'" & vbCrLf
+                        Sql &= ", FECHA_ANULADA = GETDATE()" & vbCrLf
+                        Sql &= ", USUARIO_ANULO = '" & Usuario & "'" & vbCrLf
+                        Sql &= ", USUARIO_EDICION_FECHA = GETDATE()" & vbCrLf
+                        Sql &= " WHERE COMPAÑIA = " & Compañia & " AND TIPO_FACTURA = " & Me.cmbTipDoc.SelectedValue & " AND NUMERO_FACTURA = " & numFactura & " AND CODIGO_BUXIS = " & CodBuxis & vbCrLf
                         sqlCmd.CommandText = Sql
                         RowsAfected = jClass.ejecutarComandoSql(sqlCmd)
-                        Sql = "EXECUTE [Coo].[sp_COOPERATIVA_PROGRAMACION_SOLICITUDES_ENCABEZADO_ANULADAS_IUD]"
-                        Sql &= " @COMPAÑIA = " & Compañia
-                        Sql &= ", @NUM_SOLICITUD = " & numSoli
-                        Sql &= ", @MOTIVO = 'ANULACION FACTURA'"
-                        Sql &= ", @USUARIO = '" & Usuario & "'"
-                        Sql &= ", @IUD = 'I'"
+                        Sql = "EXECUTE [Coo].[sp_COOPERATIVA_PROGRAMACION_SOLICITUDES_ENCABEZADO_ANULADAS_IUD]" & vbCrLf
+                        Sql &= " @COMPAÑIA = " & Compañia & vbCrLf
+                        Sql &= ", @NUM_SOLICITUD = " & numSoli & vbCrLf
+                        Sql &= ", @MOTIVO = 'ANULACION FACTURA'" & vbCrLf
+                        Sql &= ", @USUARIO = '" & Usuario & "'" & vbCrLf
+                        Sql &= ", @IUD = 'I'" & vbCrLf
                         sqlCmd.CommandText = Sql
                         RowsAfected = jClass.ejecutarComandoSql(sqlCmd)
                         Sql = "EXECUTE [Coo].[sp_COOPERATIVA_PROGRAMACION_SOLICITUDES_DETALLE_ANULADAS_IUD]"
-                        Sql &= " @COMPAÑIA = " & Compañia
-                        Sql &= ", @NUM_SOLICITUD = " & numSoli
-                        Sql &= ", @USUARIO = '" & Usuario & "'"
-                        Sql &= ", @IUD = 'I'"
+                        Sql &= " @COMPAÑIA = " & Compañia & vbCrLf
+                        Sql &= ", @NUM_SOLICITUD = " & numSoli & vbCrLf
+                        Sql &= ", @USUARIO = '" & Usuario & "'" & vbCrLf
+                        Sql &= ", @IUD = 'I'" & vbCrLf
                         sqlCmd.CommandText = Sql
                         RowsAfected = jClass.ejecutarComandoSql(sqlCmd)
                     Next
                 End If
             Next
+            AhorroExt = jClass.obtenerEscalar("SELECT ISNULL(AHORRO_EXTRA, 0.00) FROM FACTURACION_GENERADA_ENCABEZADO WHERE COMPAÑIA = " & Compañia & " AND TIPO_DOCUMENTO = " & Me.cmbTipDoc.SelectedValue & " AND NUMERO_FACTURA = " & numFactura & " AND ORDEN_VENTA = " & NumOV)
+            If AhorroExt > 0 Then
+                'SI HUBO PAGO CON AHORROS EXTRAORDINARIO SE RETORNA EL VALOR AL AHORRO DEL SOCIO
+                Sql = "EXECUTE [dbo].[sp_COOPERATIVA_SOCIO_AHORROS_IUD]" & vbCrLf
+                Sql &= " @COMPAÑIA             = " & Compañia & vbCrLf
+                Sql &= ",@CODIGO_EMPLEADO      = " & CodBuxis & vbCrLf
+                Sql &= ",@CODIGO_EMPLEADO_AS   = '" & jClass.obtenerEscalar("SELECT CODIGO_EMPLEADO_AS FROM COOPERATIVA_CATALOGO_SOCIOS WHERE COMPAÑIA = " & Compañia & " AND CODIGO_EMPLEADO = " & CodBuxis) & "'" & vbCrLf
+                Sql &= ",@FECHA_AHORRO         = '" & Format(Now, "dd/MM/yyyy") & "'" & vbCrLf
+                Sql &= ",@CUOTA_EXTRAORDINARIO = " & Format(AhorroExt, "0.00") & vbCrLf
+                Sql &= ",@USUARIO              = '" & Usuario & "'" & vbCrLf
+                Sql &= ",@IUD                  = 'I'" & vbCrLf
+                RowsAfected = jClass.ejecutarComandoSql(New SqlCommand(Sql))
+            End If
             CargaGrid(Me.cmbBODEGA.SelectedValue, Me.cmbTipDoc.SelectedValue, 0, "")
             MsgBox("La Factura de Anulo con Exito...", MsgBoxStyle.Critical, "Anulacion")
         Catch ex As Exception
