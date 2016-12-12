@@ -320,49 +320,7 @@ Public Class jarsClass
         cerrarConexion()
         Return retorno
     End Function
-    'Public Sub imprimeCheque(ByVal Cheque As Integer, ByVal NomProv As String, ByVal total_cheque As Double)
-    '    Dim VLetras As New NumeroLetras
-    '    Dim DT01 As DataTable
-    '    Dim sqlCmd As New SqlCommand
-    '    Dim ImpCheque As New Contabilidad_CuentasxPagar_Emitir_Cheque_Rpt
-    '    Dim letras As String
-    '    Try
-    '        letras = VLetras.Letras(total_cheque.ToString)
-    '        sql = "EXEC sp_CONTABILIDAD_EMITIR_CHEQUE "
-    '        sql &= Cheque
-    '        sql &= ", '" & NomProv & "'"
-    '        sql &= ", " & total_cheque
-    '        sql &= ", '" & letras & "'"
-    '        sqlCmd.CommandText = sql
-    '        DT01 = obtenerDatos(sqlCmd)
-    '        ImpCheque.SetDataSource(DT01)
-    '        ImpCheque.PrintToPrinter(1, False, 1, 1)
-    '    Catch ex As Exception
-    '        MessageBox.Show(ex.Message, "Error...imprimeCheque!!! ", MessageBoxButtons.OK, MessageBoxIcon.Error)
-    '    End Try
-    'End Sub
-    'Public Sub imprimeCheque2(ByVal Cheque As Integer, ByVal NomProv As String, ByVal total_cheque As Double, ByVal Nego As Boolean)
-    '    Dim VLetras As New NumeroLetras
-    '    Dim DT01 As DataTable
-    '    Dim sqlCmd As New SqlCommand
-    '    Dim ImpCheque As New Contabilidad_CuentasxPagar_Emitir_Cheque2_Rpt
-    '    Dim letras As String
-    '    Try
-    '        letras = VLetras.Letras(total_cheque.ToString)
-    '        sql = "EXEC sp_CONTABILIDAD_EMITIR_CHEQUE2 "
-    '        sql &= Cheque
-    '        sql &= ", '" & NomProv & "'"
-    '        sql &= ", " & total_cheque
-    '        sql &= ", '" & letras & "'"
-    '        sql &= ", " & IIf(Nego, 1, 0)
-    '        sqlCmd.CommandText = sql
-    '        DT01 = obtenerDatos(sqlCmd)
-    '        ImpCheque.SetDataSource(DT01)
-    '        ImpCheque.PrintToPrinter(1, False, 1, 1)
-    '    Catch ex As Exception
-    '        MessageBox.Show(ex.Message, "Error...imprimeCheque2!!! ", MessageBoxButtons.OK, MessageBoxIcon.Error)
-    '    End Try
-    'End Sub
+
     Public Function IngresarCostoUeps(ByVal Compañia, ByVal Bodega, ByVal Producto, ByVal entrada, ByVal salidas, ByVal bandera, Optional ByVal costo_uni = 0)
         Dim posicion As Integer
         sql = "Execute sp_INVENTARIOS_INGRESAR_COMPRAS "
@@ -380,33 +338,7 @@ Public Class jarsClass
         End If
         Return leerDataeader(sql, posicion)
     End Function
-    'Public Function CargarConciliacionBancaria(ByVal consulta As String) As Conciliaciones_Bancarias_Source
-    '    Dim tbl As New Conciliaciones_Bancarias_Source
-    '    Try
-    '        abrirConexion()
-    '        Dim cmd As New SqlCommand
-    '        cmd.Connection = Me.Conexion_
-    '        cmd.CommandText = consulta
-    '        tbl.Load(cmd.ExecuteReader, LoadOption.OverwriteChanges, tbl.Tables(0), tbl.Tables(1))
 
-    '    Catch ex As Exception
-    '        MsgBox(ex.Message, MsgBoxStyle.Information, "Carga de Datos (CargarConciliacionBancaria)")
-    '    End Try
-    '    cerrarConexion()
-    '    Return tbl
-    'End Function
-    'Public Function SocioBloqueado(ByVal CodSocio As String) As Boolean
-    '    Dim Bloqueado As Boolean
-    '    Dim nombre As String
-    '    sql = "SELECT BLOQUEADO FROM COOPERATIVA_CATALOGO_SOCIOS WHERE COMPAÑIA = " & Compañia & " AND CODIGO_EMPLEADO_AS = '" & CodSocio & "'"
-    '    Bloqueado = obtenerEscalar(sql)
-    '    If Bloqueado Then
-    '        sql = "SELECT NOMBRE_COMPLETO FROM COOPERATIVA_CATALOGO_SOCIOS WHERE COMPAÑIA = " & Compañia & " AND CODIGO_EMPLEADO_AS = '" & CodSocio & "'"
-    '        nombre = obtenerEscalar(sql)
-    '        MsgBox("Bloqueado por falta de pago." & vbCrLf & "Solicitar autorización a Gerencia.", MsgBoxStyle.Critical, nombre)
-    '    End If
-    '    Return Bloqueado
-    'End Function
     Public Function SocioBloqueado(ByVal CodSocio As String) As Boolean
         Dim Bloqueado As Boolean
         Dim NotieneAcceso As Boolean
