@@ -23,12 +23,12 @@ Public Class FrmProgramacion
         Sql &= "   AND S.CORRELATIVO = " & Num_Solicitud
         PeriodoPago = jClass.obtenerEscalar(Sql).ToString().Trim()
         Me.Icon = System.Drawing.Icon.ExtractAssociatedIcon(IconPath)
+        Iniciando = True
         Me.DtpFechaPago.Value = Now()
         Me.DtpFechaIniPres.Value = Now()
         Me.DtpFechaPrimerPag.MinDate = CDate(Format(Now(), "dd/MM/yyyy"))
         Me.DtpFechaPrimerPag.Value = Now()
         TxtNumSolicitud.Text = Num_Solicitud
-        Iniciando = True
         Deducciones()
         MantenimientoProgramacion(0, DtpFechaPrimerPag.Value, 0, 0, 0, 0, 0, 0, 0, 3)
         CargaPeriodos()
@@ -1304,13 +1304,15 @@ Public Class FrmProgramacion
 
     Private Sub DtpFechaPago_ValueChanged(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles DtpFechaPago.ValueChanged
         Dim DescEspTot As Double = 0, Sql As String
-        If Me.DtpFechaPago.Value.Day = 12 And (Me.DtpFechaPago.Value.Month = 6 Or Me.DtpFechaPago.Value.Month = 12) Then
-            Sql = "SELECT ISNULL(SUM(D.CAPITAL), 0.00) FROM COOPERATIVA_PROGRAMACION_SOLICITUDES_DETALLE D " & vbCrLf
-            Sql &= "INNER JOIN COOPERATIVA_SOLICITUDES S ON D.COMPAÑIA = S.COMPAÑIA AND D.NUMERO_SOLICITUD = S.CORRELATIVO " & vbCrLf
-            Sql &= "WHERE S.CODIGO_BUXIS = " & Me.TxtCodigoBuxis.Text & " AND CAPITAL_D = 0 AND CONVERT(DATE, FECHA_PAGO) = CONVERT(DATE, '" & Format(Me.DtpFechaPago.Value, "dd/MM/yyyy") & "', 103)"
-            DescEspTot = jClass.obtenerEscalar(Sql)
-            If DescEspTot > 0 Then
-                MsgBox(Me.TxtNombre.Text & vbCrLf & "TIENE CUOTAS PROGRAMADAS PARA " & IIf(Me.DtpFechaPago.Value.Month = 6, "BONIFICACIÓN", "AGUINALDO") & "-" & Me.DtpFechaPago.Value.Year & vbCrLf & "POR UN TOTAL DEL $ " & Format(DescEspTot, "0.00"), MsgBoxStyle.Information, "AGUINALDO")
+        If Not Iniciando Then
+            If Me.DtpFechaPago.Value.Day = 12 And (Me.DtpFechaPago.Value.Month = 6 Or Me.DtpFechaPago.Value.Month = 12) Then
+                Sql = "SELECT ISNULL(SUM(D.CAPITAL), 0.00) FROM COOPERATIVA_PROGRAMACION_SOLICITUDES_DETALLE D " & vbCrLf
+                Sql &= "INNER JOIN COOPERATIVA_SOLICITUDES S ON D.COMPAÑIA = S.COMPAÑIA AND D.NUMERO_SOLICITUD = S.CORRELATIVO " & vbCrLf
+                Sql &= "WHERE S.CODIGO_BUXIS = " & Me.TxtCodigoBuxis.Text & " AND CAPITAL_D = 0 AND CONVERT(DATE, FECHA_PAGO) = CONVERT(DATE, '" & Format(Me.DtpFechaPago.Value, "dd/MM/yyyy") & "', 103)"
+                DescEspTot = jClass.obtenerEscalar(Sql)
+                If DescEspTot > 0 Then
+                    MsgBox(Me.TxtNombre.Text & vbCrLf & "TIENE CUOTAS PROGRAMADAS PARA " & IIf(Me.DtpFechaPago.Value.Month = 6, "BONIFICACIÓN", "AGUINALDO") & "-" & Me.DtpFechaPago.Value.Year & vbCrLf & "POR UN TOTAL DEL $ " & Format(DescEspTot, "0.00"), MsgBoxStyle.Information, "AGUINALDO")
+                End If
             End If
         End If
     End Sub
