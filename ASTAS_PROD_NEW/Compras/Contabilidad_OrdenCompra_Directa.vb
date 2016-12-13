@@ -1037,8 +1037,8 @@ Public Class Contabilidad_OrdenCompra_Directa
                     Next
                 End If
                 'Generar cuenta por pagar
-                Mantenimiento_Cheques(Compañia, Me.txtOC.Text, Me.cmbBODEGA.SelectedValue, 0, Me.txtSubTotal.Text, Me.txtIVA.Text, (Val(Me.txtSubTotal.Text) + Val(Me.txtIVA.Text)), _
-                                     Me.txtPercepcion.Text, Me.txtTotalFact.Text, Me.txtNumDocumento.Text, 0, "", 0, 0, 0, 0, Me.dpFechaDocumento.Value, "", "I")
+                Mantenimiento_Cheques(Compañia, Me.txtOC.Text, Me.cmbBODEGA.SelectedValue, 0, Me.txtSubTotal.Text.Replace(",", ""), Me.txtIVA.Text.Replace(",", ""), (Val(Me.txtSubTotal.Text.Replace(",", "")) + Val(Me.txtIVA.Text.Replace(",", ""))), _
+                                     Me.txtPercepcion.Text.Replace(",", ""), Me.txtTotalFact.Text.Replace(",", ""), Me.txtNumDocumento.Text, 0, "", 0, 0, 0, 0, Me.dpFechaDocumento.Value, "", "I")
                 'Datos reporte recibido
                 For i As Integer = 0 To Me.dgvDetalleOC.RowCount - 1
                     Sql = "EXECUTE sp_CONTABILIDAD_ORDEN_COMPRA_DETALLE_RECIBIDO_IUD "
@@ -1088,9 +1088,9 @@ Public Class Contabilidad_OrdenCompra_Directa
                     Sql &= ", @CHEQUE = 0" & vbCrLf
                     Sql &= ", @SUBTOTAL = 0" & vbCrLf
                     Sql &= ", @IVA = 0" & vbCrLf
-                    Sql &= ", @TOTAL = " & Me.txtTotalFact.Text & vbCrLf
+                    Sql &= ", @TOTAL = " & Me.txtTotalFact.Text.Replace(",", "") & vbCrLf
                     Sql &= ", @RETENCION = 0" & vbCrLf
-                    Sql &= ", @TOTAL_FINAL = " & Me.txtTotalFact.Text & vbCrLf
+                    Sql &= ", @TOTAL_FINAL = " & Me.txtTotalFact.Text.Replace(",", "") & vbCrLf
                     Sql &= ", @DOCUMENTO = " & Me.txtNumDocumento.Text & vbCrLf
                     Sql &= ", @BANCO = 0" & vbCrLf
                     Sql &= ", @CUENTA_BANCARIA = ''" & vbCrLf
